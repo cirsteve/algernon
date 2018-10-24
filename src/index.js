@@ -21,8 +21,8 @@ ReactDOM.render((
       <LoadingContainer>
         <Router history={history} store={store}>
           <div>
-          <Route exact path="/" component={Home}/>
-          <Route exact path="/users/:address" component={User}/>
+            <Route exact path="/" component={Home}/>
+            <Route exact path="/users/:address" component={User}/>
           </div>
         </Router>
       </LoadingContainer>

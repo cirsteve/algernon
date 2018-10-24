@@ -1,9 +1,26 @@
 import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
-
 import PropTypes from 'prop-types'
+
 import { getMultihash, getBytes32FromMultihash } from '../util/multihash'
-import {formatGroupInfo, formatGroupData} from '../util/formatResponse'
+import {formatGroupInfo, formatGroupData, combineGroupDataAndInfo} from '../util/formatResponse'
+
+import TopBar from './common/TopBar'
+import IpfsContent from './common/IpfsContent'
+
+const GroupItem = props =>
+  <div>
+    <div>
+      owner: {props.owner}
+    </div>
+    <div>
+      fee: {props.fee}
+    </div>
+    <div>
+      limit: {props.limit}
+    </div>
+    <IpfsContent hash={props.hash} />
+  </div>
 
 class Home extends Component {
   constructor (props, context) {
@@ -29,11 +46,20 @@ class Home extends Component {
   }
 
   render () {
+    const { account } = this.props
     const { groupInfo, groupData} = this.getRenderValues();
+    let groups = 'Loading Groups'
+
+    if (Array.isArray(groupInfo) && Array.isArray(groupData) && groupInfo.length) {
+      groups = combineGroupDataAndInfo(groupInfo, groupData).map(g => <GroupItem key={g.name} {...g} />)
+    } else {
+      groups = 'No Groups'
+    }
     return (
       <div>
+        <TopBar address={account} />
         <h3>Groups</h3>
-        {Array.isArray(groupInfo) ? groupInfo.length ? groupInfo.map(gi => gi) : 'No Groups' : groupInfo}
+        {groups}
       </div>
     )
   }
@@ -46,7 +72,7 @@ Home.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapStateToProps = state => {
   return {
-    accounts: state.accounts,
+    account: state.accounts[0],
     StudyGroup: state.contracts.StudyGroup
   }
 }

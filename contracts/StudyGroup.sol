@@ -180,7 +180,7 @@ contract StudyGroup is Users, Pausable{
     }
 
     function getGroupInfoUserOwnedGroups (address _address) public view returns (uint256[] ids, uint256[] fees, uint256[] limits, uint256[] balances, address[] owners) {
-      uint256 groupCount = userGroups[_address].length;
+      uint256 groupCount = userOwnedGroups[_address].length;
       ids = new uint256[](groupCount);
       fees = new uint256[](groupCount);
       limits = new uint256[](groupCount);
@@ -188,7 +188,7 @@ contract StudyGroup is Users, Pausable{
       owners = new address[](groupCount);
 
       for (uint i = 0; i < groupCount; i++) {
-        Group storage group = groups[userGroups[_address][i]];
+        Group storage group = groups[userOwnedGroups[_address][i]];
         ids[i] = group.id;
         fees[i] = group.fee;
         limits[i] = group.limit;
@@ -200,7 +200,7 @@ contract StudyGroup is Users, Pausable{
     }
 
     function getGroupDataUserOwnedGroups (address _address) public view returns (uint256[] ids, bytes32[] hashes, uint8[] functions, uint8[] sizes) {
-      uint256 groupCount = userGroups[_address].length;
+      uint256 groupCount = userOwnedGroups[_address].length;
       ids = new uint256[](groupCount);
       hashes = new bytes32[](groupCount);
       functions = new uint8[](groupCount);
@@ -208,7 +208,7 @@ contract StudyGroup is Users, Pausable{
 
 
       for (uint i = 0; i < groupCount; i++) {
-        Group storage group = groups[userGroups[_address][i]];
+        Group storage group = groups[userOwnedGroups[_address][i]];
         ids[i] = group.id;
         hashes[i] = group.groupData.hash;
         functions[i] = group.groupData.hashFunction;

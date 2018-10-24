@@ -5,9 +5,9 @@ import './Multihash.sol';
 /** @title Users. */
 contract Users is MultiHash {
 
-  mapping (address => Multihash[]) userNotes;
-  mapping (address => uint[]) userGroups;
-  mapping (address => uint[]) userOwnedGroups;
+  mapping (address => Multihash[]) public userNotes;
+  mapping (address => uint[]) public userGroups;
+  mapping (address => uint[]) public userOwnedGroups;
   mapping (address => uint256) public balances;
 
   event UserEnrolled(address user, uint256 _id);
