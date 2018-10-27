@@ -7,24 +7,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-
-const Text = props =>
-  <TextField
-    autoFocus
-    onChange={props.onChange}
-    id={props.name}
-    label={props.label}
-    type={props.type}
-    fullWidth
-    value={props.value} />
-
-const RENDER_FIELDS = {
-
-}
-
 export default class FormDialog extends React.Component {
 
   render() {
+    const {text, content, handleClose, onSubmit, submitLabel } = this.props
     return (
       <div>
         <Dialog
@@ -35,10 +21,9 @@ export default class FormDialog extends React.Component {
           <DialogTitle id="form-dialog-title">Create A Group</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Fill in the fields below to create your own study group
+              {text}
             </DialogContentText>
-            {this.props.fields.map(Text)}
-            {this.props.metaDataFields.map(Text)}
+            {content}
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.handleClose} color="primary">

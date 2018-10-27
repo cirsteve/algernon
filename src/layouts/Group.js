@@ -4,59 +4,113 @@ import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button';
 import { getBytes32FromMultihash } from '../util/multihash'
 import {formatGroupInfo, formatGroupData, combineGroupDataAndInfo} from '../util/formatResponse'
-import GroupForm from './forms/GroupForm'
-import MultiMetaForm from './forms/MultiMetaForm'
+import DialogForm from './forms/DialogForm'
 
 import TopBar from './common/TopBar'
 import IpfsContent from './common/IpfsContent'
-import Text from './forms/common/Text'
-import GroupItem from './groups/GroupItem'
-import { FIELD_OPTIONS, GROUP_FIELDS, META_DATA_FIELDS } from './common/fields'
+
+const GroupItem = props =>
+  <div>
+    <div>
+      owner: {props.owner}
+    </div>
+    <div>
+      fee: {props.fee}
+    </div>
+    <div>
+      limit: {props.limit}
+    </div>
+    <IpfsContent hash={props.hash} />
+  </div>
+
+const GROUP_FIELDS = [
+  {
+    name: 'fee',
+    label: 'Enrollment Fee',
+    type: 'number',
+    defaultValue: 0,
+  },
+  {
+    name: 'limit',
+    label: 'Enrollment Limit',
+    type: 'number',
+    defaultValue: 0,
+  }
+]
+
+const META_DATA_FIELDS = [
+  {
+    label: 'Name',
+    type: 'string',
+    defaultValue: ''
+  },
+  {
+    label: 'Description',
+    type: 'string',
+    defaultValue: ''
+  },
+  {
+    label: 'Materials',
+    type: 'string',
+    defaultValue: ''
+  },
+]
+
+const FIELD_OPTIONS = [
+  {
+    type: string,
+    defaultValue: '',
+    label: ''
+  },
+  {
+    type: number,
+    defaultValue: 0,
+    label: ''
+  },
+  {
+    type: decimal,
+    defaultValue: 0.0,
+    label: ''
+  }
+]
 
 
 class User extends Component {
   constructor (props, context) {
     super(props)
     this.methods = context.drizzle.contracts.StudyGroup.methods
-
-    this.groupsInfoKey = this.methods.getGroupInfoUserGroups.cacheCall(props.account, 0, 10)
-    this.groupsDataKey = this.methods.getGroupDataUserGroups.cacheCall(props.account, 0, 10)
-    this.ownedGroupsInfoKey = this.methods.getGroupInfoUserOwnedGroups.cacheCall(props.account, 0, 10)
-    this.ownedGroupsDataKey = this.methods.getGroupDataUserOwnedGroups.cacheCall(props.account, 0, 10)
+    console.log('us coin: ', props.account)
+    this.groupsInfoKey = this.methods.getGroupInfoUserGroups.cacheCall(props.account)
+    this.groupsDataKey = this.methods.getGroupDataUserGroups.cacheCall(props.account)
+    this.ownedGroupsInfoKey = this.methods.getGroupInfoUserOwnedGroups.cacheCall(props.account)
+    this.ownedGroupsDataKey = this.methods.getGroupDataUserOwnedGroups.cacheCall(props.account)
 
     this.state = {
-      openGroupFields: false,
-      openMetaFields: false,
+      open: false,
+      openMetaFields: false
       groupForm: GROUP_FIELDS.reduce((acc, f) => {
-        acc[f.label] = f.defaultValue;
+        acc[f.name] = f.defaultValue;
         return acc;
       }, {}),
       groupMetaData: META_DATA_FIELDS.reduce((acc, f) => {
-        acc[f.label] = f.defaultValue;
+        acc[f.name] = f.defaultValue;
         return acc;
       }, {})
     }
   }
 
-  updateDialogState = openGroupFields => this.setState({...this.state, openGroupFields})
+  updateDialogState = open => this.setState({...this.state, open})
 
   updateForm = (field, e) => this.setState({...this.state, groupForm: {...this.state.groupForm, [field]: e.target.value}})
 
-  updateMetaData = (field, e) => {
-    console.log('umd: ', field, e)
-    this.setState({...this.state, groupMetaData: {...this.state.groupMetaData, [field]: e.target.value}})
-  }
+  updateMetaData = (field, e) => this.setState({...this.state, groupMetaData: {...this.state.groupMetaData, [field]: e.target.value}})
 
   submitGroup = () => {
+    const { fee, limit } = this.state.groupForm;
     const { digest, hashFunction, size } = getBytes32FromMultihash(this.props.requestedHash)
-    this.methods.createGroup.cacheSend(
-      digest,
-      hashFunction,
-      size,
-      this.state.groupForm['Enrollment Fee'],
-      this.state.groupForm['Enrollment Limit']
-    )
+    const trx = this.methods.createGroup.cacheSend(digest, hashFunction, size, fee, limit)
     this.props.ipfsUploadAcked()
+    console.log('create grp trx: ', trx, digest, hashFunction, size, fee, limit, this.props.requestedHash)
   }
 
   generateMetaDataHash = () => {
@@ -64,11 +118,10 @@ class User extends Component {
     this.props.generateIPFSHash(JSON.stringify(this.state.groupMetaData))
   }
 
-  updateMetaField = () => false
+  updateMetaField = ()
 
   getRenderValues = () => {
     const { StudyGroup } = this.props
-    console.log('grv: ', StudyGroup)
     return {
       groupsInfo: StudyGroup.getGroupInfoUserGroups[this.groupsInfoKey] ?
         formatGroupInfo(StudyGroup.getGroupInfoUserGroups[this.groupsInfoKey].value) : 'loading Groups',
@@ -88,16 +141,14 @@ class User extends Component {
 
 
     const formFields = GROUP_FIELDS.map(f => {
-      f.value = this.state.groupForm[f.name]
-      f.onChange = this.updateForm.bind(this, f.label)
-      f.key = f.label
+      f.value = this.state.groupForm[f.name];
+      f.onChange = this.updateForm.bind(this, f.name)
       return f;
     })
 
     const metaDataFields = META_DATA_FIELDS.map(f => {
-      f.value = this.state.groupMetaData[f.label]
-      f.onChange = this.updateMetaData.bind(this, f.label)
-      f.key = f.label
+      f.value = this.state.groupMetaData[f.name];
+      f.onChange = this.updateMetaData.bind(this, f.name)
       return f;
     })
 
@@ -113,6 +164,8 @@ class User extends Component {
       ownedGroups = 'No Owned Groups'
     }
 
+
+
     return (
       <div>
         <TopBar address={account} />
@@ -127,21 +180,18 @@ class User extends Component {
         <div>
           {ownedGroups}
         </div>
-        <GroupForm
-          open={this.state.openGroupFields}
-          text='Fill in the fields below to create your own study group'
+        <DialogForm open={this.state.open}
           handleClose={this.updateDialogState.bind(this, false)}
           submitLabel={this.props.requestedHash ? 'Create Group' : 'Prepare Group'}
           onSubmit={this.props.requestedHash ? this.submitGroup : this.generateMetaDataHash}
-          content={formFields.concat(metaDataFields).map(Text)} />
-        <MultiMetaForm
-          open={this.state.openMetaFields}
-          text='Update the group fields you want to describe your group below'
+          fields={formFields}
+          metaDataFields={metaDataFields} />
+        <DialogForm open={this.state.openMetaFields}
           handleClose={this.updateDialogState.bind(this, false)}
           submitLabel={this.props.requestedHash ? 'Create Group' : 'Prepare Group'}
           onSubmit={this.props.requestedHash ? this.submitGroup : this.generateMetaDataHash}
           fields={metaDataFields}
-          fieldOptions={FIELD_OPTIONS} />
+          fieldOptions={} />
       </div>
     )
   }

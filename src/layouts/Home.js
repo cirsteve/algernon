@@ -30,8 +30,8 @@ class Home extends Component {
 
 
     this.groupsCountKey = this.methods.getGroupCount.cacheCall(),
-    this.groupInfoKey = this.methods.getGroupInfo.cacheCall(),
-    this.groupDataKey = this.methods.getGroupData.cacheCall()
+    this.groupInfoKey = this.methods.getGroupInfo.cacheCall(0,5),
+    this.groupDataKey = this.methods.getGroupData.cacheCall(0,5)
 
 
   }

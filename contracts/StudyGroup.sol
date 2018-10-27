@@ -99,123 +99,125 @@ contract StudyGroup is Users, Pausable{
       return groups.length;
     }
 
-    function getGroupInfo () public view returns (uint256[] ids, uint256[] fees, uint256[] limits, uint256[] balances, address[] owners) {
+    function getInfos( uint256[] _ids) internal view returns (uint256[], uint256[] fees, uint256[] limits, uint256[] balances, address[] owners) {
+      fees = new uint256[](_ids.length);
+      limits = new uint256[](_ids.length);
+      balances = new uint256[](_ids.length);
+      owners = new address[](_ids.length);
+
+      for (uint i = 0; i < _ids.length; i++) {
+        Group storage group = groups[_ids[i]];
+        fees[i] = group.fee;
+        limits[i] = group.limit;
+        balances[i] = group.balance;
+        owners[i] = group.owner;
+      }
+
+      return (_ids, fees, limits, balances, owners);
+
+    }
+
+    function getDatas (uint256[] _ids) public view returns (uint256[], bytes32[] hashes, uint8[] functions, uint8[] sizes) {
+      hashes = new bytes32[](_ids.length);
+      functions = new uint8[](_ids.length);
+      sizes = new uint8[](_ids.length);
+
+
+      for (uint i = 0; i < _ids.length; i++) {
+        Group storage group = groups[_ids[i]];
+        hashes[i] = group.groupData.hash;
+        functions[i] = group.groupData.hashFunction;
+        sizes[i] = group.groupData.size;
+
+      }
+
+      return (_ids, hashes, functions, sizes);
+    }
+
+    function getIndexes (uint256 _groupCount, uint256 _last, uint256 _index, uint256 _limit) internal pure returns (uint256[] indexes) {
+      if (_limit > _groupCount) {
+          _limit = _groupCount;
+          _index = 0;
+      }
+
+      if (_last > _groupCount) {
+          _index = _groupCount - _limit;
+          _limit = _groupCount;
+      }
+      indexes = new uint256[](_limit);
+      uint256 idx = 0;
+
+      for (_index; _index < _limit; _index++) {
+        indexes[idx] = _index;
+        idx++;
+      }
+
+      return indexes;
+    }
+
+    function getGroupInfo (uint256 _index, uint256 _limit) public view returns (uint256[], uint256[], uint256[], uint256[], address[]) {
       uint256 groupCount = groups.length;
-      ids = new uint256[](groupCount);
-      fees = new uint256[](groupCount);
-      limits = new uint256[](groupCount);
-      balances = new uint256[](groupCount);
-      owners = new address[](groupCount);
+      uint256 last = _index + _limit;
 
-      for (uint i = 0; i < groupCount; i++) {
-        Group storage group = groups[i];
-        ids[i] = group.id;
-        fees[i] = group.fee;
-        limits[i] = group.limit;
-        balances[i] = group.balance;
-        owners[i] = group.owner;
-      }
-
-      return (ids, fees, limits, balances, owners);
+      return getInfos(getIndexes(groupCount, last, _index, _limit));
     }
 
-    function getGroupData () public view returns (uint256[] ids, bytes32[] hashes, uint8[] functions, uint8[] sizes) {
+    function getGroupData (uint256 _index, uint256 _limit) public view returns (uint256[], bytes32[], uint8[], uint8[]) {
       uint256 groupCount = groups.length;
-      ids = new uint256[](groupCount);
-      hashes = new bytes32[](groupCount);
-      functions = new uint8[](groupCount);
-      sizes = new uint8[](groupCount);
+      uint256 last = _index + _limit;
 
-
-      for (uint i = 0; i < groupCount; i++) {
-        Group storage group = groups[i];
-        ids[i] = group.id;
-        hashes[i] = group.groupData.hash;
-        functions[i] = group.groupData.hashFunction;
-        sizes[i] = group.groupData.size;
-
-      }
-
-      return (ids, hashes, functions, sizes);
+      return getDatas(getIndexes(groupCount, last, _index, _limit));
     }
 
-    function getGroupInfoUserGroups (address _address) public view returns (uint256[] ids, uint256[] fees, uint256[] limits, uint256[] balances, address[] owners) {
+    function getGroupInfoUserGroups (address _address, uint256 _index, uint256 _limit) public view returns (uint256[], uint256[], uint256[], uint256[], address[]) {
       uint256 groupCount = userGroups[_address].length;
-      ids = new uint256[](groupCount);
-      fees = new uint256[](groupCount);
-      limits = new uint256[](groupCount);
-      balances = new uint256[](groupCount);
-      owners = new address[](groupCount);
+      uint256 last = _index + _limit;
+      uint256[] memory indexes = getIndexes(groupCount, last, _index, _limit);
+      uint256[] memory ids = new uint256[](indexes.length);
 
-      for (uint i = 0; i < groupCount; i++) {
-        Group storage group = groups[userGroups[_address][i]];
-        ids[i] = group.id;
-        fees[i] = group.fee;
-        limits[i] = group.limit;
-        balances[i] = group.balance;
-        owners[i] = group.owner;
+      for (uint i = 0; i < indexes.length; i++) {
+        ids[i] = userGroups[_address][indexes[i]];
       }
 
-      return (ids, fees, limits, balances, owners);
+      return getInfos(ids);
     }
 
-    function getGroupDataUserGroups (address _address) public view returns (uint256[] ids, bytes32[] hashes, uint8[] functions, uint8[] sizes) {
+    function getGroupDataUserGroups (address _address, uint256 _index, uint256 _limit) public view returns (uint256[], bytes32[], uint8[], uint8[]) {
       uint256 groupCount = userGroups[_address].length;
-      ids = new uint256[](groupCount);
-      hashes = new bytes32[](groupCount);
-      functions = new uint8[](groupCount);
-      sizes = new uint8[](groupCount);
+      uint256 last = _index + _limit;
+      uint256[] memory indexes = getIndexes(groupCount, last, _index, _limit);
+      uint256[] memory ids = new uint256[](indexes.length);
 
-
-      for (uint i = 0; i < groupCount; i++) {
-        Group storage group = groups[userGroups[_address][i]];
-        ids[i] = group.id;
-        hashes[i] = group.groupData.hash;
-        functions[i] = group.groupData.hashFunction;
-        sizes[i] = group.groupData.size;
-
+      for (uint i = 0; i < indexes.length; i++) {
+        ids[i] = userGroups[_address][indexes[i]];
       }
 
-      return (ids, hashes, functions, sizes);
+      return getDatas(ids);
     }
 
-    function getGroupInfoUserOwnedGroups (address _address) public view returns (uint256[] ids, uint256[] fees, uint256[] limits, uint256[] balances, address[] owners) {
-      uint256 groupCount = userOwnedGroups[_address].length;
-      ids = new uint256[](groupCount);
-      fees = new uint256[](groupCount);
-      limits = new uint256[](groupCount);
-      balances = new uint256[](groupCount);
-      owners = new address[](groupCount);
+    function getGroupInfoUserOwnedGroups (address _address, uint256 _index, uint256 _limit) public view returns (uint256[], uint256[], uint256[], uint256[], address[]) {
+    uint256 groupCount = userOwnedGroups[_address].length;
+    uint256 last = _index + _limit;
+    uint256[] memory indexes = getIndexes(groupCount, last, _index, _limit);
+    uint256[] memory ids = new uint256[](indexes.length);
 
-      for (uint i = 0; i < groupCount; i++) {
-        Group storage group = groups[userOwnedGroups[_address][i]];
-        ids[i] = group.id;
-        fees[i] = group.fee;
-        limits[i] = group.limit;
-        balances[i] = group.balance;
-        owners[i] = group.owner;
-      }
-
-      return (ids, fees, limits, balances, owners);
+    for (uint i = 0; i < indexes.length; i++) {
+      ids[i] = userOwnedGroups[_address][indexes[i]];
     }
 
-    function getGroupDataUserOwnedGroups (address _address) public view returns (uint256[] ids, bytes32[] hashes, uint8[] functions, uint8[] sizes) {
-      uint256 groupCount = userOwnedGroups[_address].length;
-      ids = new uint256[](groupCount);
-      hashes = new bytes32[](groupCount);
-      functions = new uint8[](groupCount);
-      sizes = new uint8[](groupCount);
+    return getInfos(ids);
+  }
 
+    function getGroupDataUserOwnedGroups (address _address, uint256 _index, uint256 _limit) public view returns (uint256[], bytes32[], uint8[], uint8[]) {
+    uint256 groupCount = userOwnedGroups[_address].length;
+    uint256 last = _index + _limit;
+    uint256[] memory indexes = getIndexes(groupCount, last, _index, _limit);
+    uint256[] memory ids = new uint256[](indexes.length);
 
-      for (uint i = 0; i < groupCount; i++) {
-        Group storage group = groups[userOwnedGroups[_address][i]];
-        ids[i] = group.id;
-        hashes[i] = group.groupData.hash;
-        functions[i] = group.groupData.hashFunction;
-        sizes[i] = group.groupData.size;
+    for (uint i = 0; i < indexes.length; i++) {
+      ids[i] = userOwnedGroups[_address][indexes[i]];
+    }
 
-      }
-
-      return (ids, hashes, functions, sizes);
+    return getDatas(ids);
     }
  }
