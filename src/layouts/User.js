@@ -43,7 +43,6 @@ class User extends Component {
   updateForm = (field, e) => this.setState({...this.state, groupForm: {...this.state.groupForm, [field]: e.target.value}})
 
   updateMetaData = (field, e) => {
-    console.log('umd: ', field, e)
     this.setState({...this.state, groupMetaData: {...this.state.groupMetaData, [field]: e.target.value}})
   }
 
@@ -60,7 +59,6 @@ class User extends Component {
   }
 
   generateMetaDataHash = () => {
-
     this.props.generateIPFSHash(JSON.stringify(this.state.groupMetaData))
   }
 
@@ -68,7 +66,6 @@ class User extends Component {
 
   getRenderValues = () => {
     const { StudyGroup } = this.props
-    console.log('grv: ', StudyGroup)
     return {
       groupsInfo: StudyGroup.getGroupInfoUserGroups[this.groupsInfoKey] ?
         formatGroupInfo(StudyGroup.getGroupInfoUserGroups[this.groupsInfoKey].value) : 'loading Groups',

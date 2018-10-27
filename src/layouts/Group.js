@@ -8,102 +8,22 @@ import DialogForm from './forms/DialogForm'
 
 import TopBar from './common/TopBar'
 import IpfsContent from './common/IpfsContent'
+import GroupItem from './groups/GroupItem'
 
-const GroupItem = props =>
-  <div>
-    <div>
-      owner: {props.owner}
-    </div>
-    <div>
-      fee: {props.fee}
-    </div>
-    <div>
-      limit: {props.limit}
-    </div>
-    <IpfsContent hash={props.hash} />
-  </div>
-
-const GROUP_FIELDS = [
-  {
-    name: 'fee',
-    label: 'Enrollment Fee',
-    type: 'number',
-    defaultValue: 0,
-  },
-  {
-    name: 'limit',
-    label: 'Enrollment Limit',
-    type: 'number',
-    defaultValue: 0,
-  }
-]
-
-const META_DATA_FIELDS = [
-  {
-    label: 'Name',
-    type: 'string',
-    defaultValue: ''
-  },
-  {
-    label: 'Description',
-    type: 'string',
-    defaultValue: ''
-  },
-  {
-    label: 'Materials',
-    type: 'string',
-    defaultValue: ''
-  },
-]
-
-const FIELD_OPTIONS = [
-  {
-    type: string,
-    defaultValue: '',
-    label: ''
-  },
-  {
-    type: number,
-    defaultValue: 0,
-    label: ''
-  },
-  {
-    type: decimal,
-    defaultValue: 0.0,
-    label: ''
-  }
-]
-
-
-class User extends Component {
+class Group extends Component {
   constructor (props, context) {
     super(props)
+    this.contract = props.StudyGroup
     this.methods = context.drizzle.contracts.StudyGroup.methods
-    console.log('us coin: ', props.account)
-    this.groupsInfoKey = this.methods.getGroupInfoUserGroups.cacheCall(props.account)
-    this.groupsDataKey = this.methods.getGroupDataUserGroups.cacheCall(props.account)
-    this.ownedGroupsInfoKey = this.methods.getGroupInfoUserOwnedGroups.cacheCall(props.account)
-    this.ownedGroupsDataKey = this.methods.getGroupDataUserOwnedGroups.cacheCall(props.account)
+    console.log('con group: ', window.location.pathname.split('/').pop())
+    this.id = window.location.pathname.split('/').pop()
 
-    this.state = {
-      open: false,
-      openMetaFields: false
-      groupForm: GROUP_FIELDS.reduce((acc, f) => {
-        acc[f.name] = f.defaultValue;
-        return acc;
-      }, {}),
-      groupMetaData: META_DATA_FIELDS.reduce((acc, f) => {
-        acc[f.name] = f.defaultValue;
-        return acc;
-      }, {})
-    }
+    this.groupInfoKey = this.methods.getGroupInfo.cacheCall(this.id, this.id+1)
+    this.groupDataKey = this.methods.getGroupData.cacheCall(this.id, this.id+1)
+    this.groupMembersKey = this.methods.getGroupMembers.cacheCall(this.id)
+
+
   }
-
-  updateDialogState = open => this.setState({...this.state, open})
-
-  updateForm = (field, e) => this.setState({...this.state, groupForm: {...this.state.groupForm, [field]: e.target.value}})
-
-  updateMetaData = (field, e) => this.setState({...this.state, groupMetaData: {...this.state.groupMetaData, [field]: e.target.value}})
 
   submitGroup = () => {
     const { fee, limit } = this.state.groupForm;
@@ -113,91 +33,49 @@ class User extends Component {
     console.log('create grp trx: ', trx, digest, hashFunction, size, fee, limit, this.props.requestedHash)
   }
 
-  generateMetaDataHash = () => {
-
-    this.props.generateIPFSHash(JSON.stringify(this.state.groupMetaData))
+  generateMetaDataHash = (notes) => {
+    this.props.generateIPFSHash(JSON.stringify(notes))
   }
 
-  updateMetaField = ()
+  submitEnroll = (value) => {
+    const trx = this.methods.createGroup.cacheSend(this.id, {value})
+  }
 
   getRenderValues = () => {
-    const { StudyGroup } = this.props
     return {
-      groupsInfo: StudyGroup.getGroupInfoUserGroups[this.groupsInfoKey] ?
-        formatGroupInfo(StudyGroup.getGroupInfoUserGroups[this.groupsInfoKey].value) : 'loading Groups',
-      groupsData: StudyGroup.getGroupDataUserGroups[this.groupsDataKey] ?
-        formatGroupData(StudyGroup.getGroupDataUserGroups[this.groupsDataKey].value) : 'loading Groups',
-      ownedGroupsInfo: StudyGroup.getGroupInfoUserOwnedGroups[this.ownedGroupsInfoKey] ?
-        formatGroupInfo(StudyGroup.getGroupInfoUserOwnedGroups[this.ownedGroupsInfoKey].value) : 'loading Groups',
-      ownedGroupsData: StudyGroup.getGroupDataUserOwnedGroups[this.ownedGroupsDataKey] ?
-        formatGroupData(StudyGroup.getGroupDataUserOwnedGroups[this.ownedGroupsDataKey].value) : 'loading Groups',
+      groupInfo: this.props.StudyGroup.getGroupInfo[this.groupInfoKey] ?
+        formatGroupInfo(this.props.StudyGroup.getGroupInfo[this.groupInfoKey].value) : 'loading Groups',
+      groupData: this.props.StudyGroup.getGroupData[this.groupDataKey] ?
+        formatGroupData(this.props.StudyGroup.getGroupData[this.groupDataKey ].value) : 'loading Groups',
+      groupMembers: this.props.StudyGroup.getGroupMembers[this.groupMembersKey] ?
+        this.props.StudyGroup.getGroupMembers[this.groupMembersKey ].value : 'loading Groups',
     }
   }
 
   render () {
-    const { groupsInfo, groupsData, ownedGroupsInfo, ownedGroupsData} = this.getRenderValues();
+    const { groupInfo, groupData, groupMembers} = this.getRenderValues();
     const { account } = this.props;
-    let groups, ownedGroups;
+    console.log('render group, ', groupInfo, groupData)
 
-
-    const formFields = GROUP_FIELDS.map(f => {
-      f.value = this.state.groupForm[f.name];
-      f.onChange = this.updateForm.bind(this, f.name)
-      return f;
-    })
-
-    const metaDataFields = META_DATA_FIELDS.map(f => {
-      f.value = this.state.groupMetaData[f.name];
-      f.onChange = this.updateMetaData.bind(this, f.name)
-      return f;
-    })
-
-    if (Array.isArray(groupsInfo) && Array.isArray(groupsData) && groupsInfo.length) {
-      groups = combineGroupDataAndInfo(groupsInfo, groupsData).map(g => <GroupItem key={g.name} {...g} />)
-    } else {
-      groups = 'No Groups'
-    }
-
-    if (Array.isArray(ownedGroupsInfo) && Array.isArray(ownedGroupsData) && ownedGroupsInfo.length) {
-      ownedGroups = combineGroupDataAndInfo(ownedGroupsInfo, ownedGroupsData).map(g => <GroupItem key={g.name} {...g} />)
-    } else {
-      ownedGroups = 'No Owned Groups'
-    }
-
-
+    const group = combineGroupDataAndInfo(groupInfo, groupData).map(g => <GroupItem key={g.name} {...g} />)
 
     return (
       <div>
         <TopBar address={account} />
-        <h3>User Groups</h3>
-        <div>
-          {groups}
-        </div>
-        <h3>Owned Groups</h3>
-        <Button onClick={this.updateDialogState.bind(this, true)} color="primary">
-          Create Group
+        <h3>Group</h3>
+        {group}
+        <Button onClick={this.submitEnroll.bind(this, 0)} color="primary">
+          Enroll
         </Button>
-        <div>
-          {ownedGroups}
-        </div>
-        <DialogForm open={this.state.open}
-          handleClose={this.updateDialogState.bind(this, false)}
-          submitLabel={this.props.requestedHash ? 'Create Group' : 'Prepare Group'}
-          onSubmit={this.props.requestedHash ? this.submitGroup : this.generateMetaDataHash}
-          fields={formFields}
-          metaDataFields={metaDataFields} />
-        <DialogForm open={this.state.openMetaFields}
-          handleClose={this.updateDialogState.bind(this, false)}
-          submitLabel={this.props.requestedHash ? 'Create Group' : 'Prepare Group'}
-          onSubmit={this.props.requestedHash ? this.submitGroup : this.generateMetaDataHash}
-          fields={metaDataFields}
-          fieldOptions={} />
+        <h4>Members</h4>
+        {groupMembers.map(m => <div>{m}</div>)}
+
       </div>
     )
   }
 }
 
-User.contextTypes = {
+Group.contextTypes = {
   drizzle: PropTypes.object
 }
 
@@ -220,4 +98,4 @@ const mapDispatch = (dispatch) => {
     };
 }
 
-export default drizzleConnect(User, mapState, mapDispatch);
+export default drizzleConnect(Group, mapState, mapDispatch);

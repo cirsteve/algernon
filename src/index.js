@@ -4,6 +4,7 @@ import { Router, Route } from 'react-router'
 import { DrizzleProvider } from 'drizzle-react'
 import Home from './layouts/Home'
 import User from './layouts/User'
+import Group from './layouts/Group'
 
 
 // Styles
@@ -23,6 +24,7 @@ ReactDOM.render((
           <div>
             <Route exact path="/" component={Home}/>
             <Route exact path="/users/:address" component={User}/>
+            <Route exact path="/groups/:id" component={Group}/>
           </div>
         </Router>
       </LoadingContainer>
