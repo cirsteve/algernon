@@ -45,6 +45,7 @@ contract StudyGroup is Users, Pausable{
       require(msg.value == group.fee, 'Enrollment Fee required');
       require(group.members.length < group.limit);
       userGroups[msg.sender].push(_id);
+      userNotes[msg.sender].push(group.groupData);
       group.balance += msg.value;
       group.members.push(msg.sender);
 
@@ -91,7 +92,7 @@ contract StudyGroup is Users, Pausable{
       emit CreditIssued(_recipient, _amt);
     }
 
-    function getGroupMembers (uint256 _id) internal view returns (address[]) {
+    function getGroupMembers (uint256 _id) public view returns (address[]) {
       return groups[_id].members;
     }
 

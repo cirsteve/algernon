@@ -14,7 +14,8 @@ contract Users is MultiHash {
 
   function updateNote(bytes32 _hash, uint8 _hashFunction, uint8 _size, uint256 _groupId, uint256 _groupIdx) public {
       require(userGroups[msg.sender][_groupIdx] == _groupId, 'GroupId and GroupIndex Mismatch');
-      userNotes[msg.sender][_groupIdx] = Multihash(_hash, _hashFunction, _size);
+      Multihash memory multihash = createMultihash(_hash, _hashFunction, _size);
+      userNotes[msg.sender][_groupIdx] = multihash;
   }
 
   function getUserGroups(address _user) public view returns (uint[]) {

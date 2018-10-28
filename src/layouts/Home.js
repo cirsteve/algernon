@@ -7,20 +7,7 @@ import {formatGroupInfo, formatGroupData, combineGroupDataAndInfo} from '../util
 
 import TopBar from './common/TopBar'
 import IpfsContent from './common/IpfsContent'
-
-const GroupItem = props =>
-  <div>
-    <div>
-      owner: {props.owner}
-    </div>
-    <div>
-      fee: {props.fee}
-    </div>
-    <div>
-      limit: {props.limit}
-    </div>
-    <IpfsContent hash={props.hash} />
-  </div>
+import GroupItem from './groups/GroupItem'
 
 class Home extends Component {
   constructor (props, context) {
