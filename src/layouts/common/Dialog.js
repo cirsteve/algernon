@@ -9,7 +9,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 export default class FormDialog extends React.Component {
 
   render() {
-    const {text, content } = this.props
+    const {title, text, content } = this.props
     return (
       <div>
         <Dialog
@@ -17,7 +17,7 @@ export default class FormDialog extends React.Component {
           onClose={this.props.handleClose}
           aria-labelledby="form-dialog-title"
         >
-          <DialogTitle id="form-dialog-title">Create A Group</DialogTitle>
+          <DialogTitle id="form-dialog-title">{title}</DialogTitle>
           <DialogContent>
             <DialogContentText>
               {text}
@@ -26,10 +26,7 @@ export default class FormDialog extends React.Component {
           </DialogContent>
           <DialogActions>
             <Button onClick={this.props.handleClose} color="primary">
-              Cancel
-            </Button>
-            <Button onClick={this.props.onSubmit} color="primary">
-              {this.props.submitLabel}
+              Close
             </Button>
           </DialogActions>
         </Dialog>

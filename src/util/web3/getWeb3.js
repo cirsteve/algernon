@@ -1,10 +1,10 @@
 import store from '../../store'
 import Web3 from 'web3'
 
-export const WEB3_INITIALIZED = 'WEB3_INITIALIZED'
+export const WEB3_INITED = 'WEB3_INITED'
 function web3Initialized(results) {
   return {
-    type: WEB3_INITIALIZED,
+    type: WEB3_INITED,
     payload: results
   }
 }
@@ -14,11 +14,21 @@ let getWeb3 = new Promise(function(resolve, reject) {
   window.addEventListener('load', function(dispatch) {
     var results
     var web3
-
     // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-    if (typeof web3 !== 'undefined') {
+
+    if (window.ethereum){
+      web3 = new Web3(window.ethereum)
+
+      results = {
+        web3Instance: web3
+      }
+
+      console.log('Injected ethereum detected.');
+
+      resolve(store.dispatch(web3Initialized(results)))
+    } else if  (typeof window.web3 !== 'undefined') {
       // Use Mist/MetaMask's provider.
-      web3 = new Web3(web3.currentProvider)
+      web3 = new Web3(window.web3.currentProvider)
 
       results = {
         web3Instance: web3

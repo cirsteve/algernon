@@ -1,4 +1,4 @@
-import StudyGroup from './../build/contracts/StudyGroup.json'
+import Groups from './../build/contracts/Groups.json'
 
 const drizzleOptions = {
   web3: {
@@ -9,11 +9,11 @@ const drizzleOptions = {
     }
   },
   contracts: [
-    StudyGroup,
+    Groups,
 
   ],
   events: {
-    StudyGroup: ['GroupCreated']
+    Groups: ['GroupCreated']
   },
   polls: {
     accounts: 1500

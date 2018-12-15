@@ -1,4 +1,5 @@
 import React from 'react';
+import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -45,4 +46,10 @@ ButtonAppBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ButtonAppBar);
+// May still need this even with data function to refresh component on updates for this contract.
+const mapState = state => {
+  return {
+    address: state.accounts[0]
+  }
+}
+export default withStyles(styles)(drizzleConnect(ButtonAppBar, mapState));

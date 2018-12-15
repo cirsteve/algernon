@@ -1,5 +1,5 @@
-var StudyGroup = artifacts.require("StudyGroup");
+var Groups = artifacts.require("Groups");
 
 module.exports = function(deployer) {
-  deployer.deploy(StudyGroup);
+  deployer.deploy(Groups);
 };

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import {BrowserRouter, Route, Switch } from 'react-router-dom'
+import {Route, Switch } from 'react-router-dom'
 import Home from './layouts/Home'
 import User from './layouts/User'
+import Group from './layouts/Group'
+import TopBar from './layouts/common/TopBar'
 
 
 // Styles
@@ -14,12 +16,12 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <BrowserRouter>
+        <TopBar />
         <Switch>
-        <Route exact path="/" component={Home}/>
-        <Route exact path="/users/:address" component={User}/>
+          <Route exact path="/" component={Home}/>
+          <Route exact path="/users/:address" component={User}/>
+          <Route exact path="/groups/:id" component={Group}/>
         </Switch>
-        </BrowserRouter>
       </div>
     );
   }
