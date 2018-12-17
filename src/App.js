@@ -3,6 +3,7 @@ import {Route, Switch } from 'react-router-dom'
 import Home from './layouts/Home'
 import User from './layouts/User'
 import Group from './layouts/Group'
+import Topic from './layouts/Topic'
 import TopBar from './layouts/common/TopBar'
 
 
@@ -19,7 +20,8 @@ class App extends Component {
         <TopBar />
         <Switch>
           <Route exact path="/" component={Home}/>
-          <Route exact path="/users/:address" component={User}/>
+          <Route exact path="/users/:address" component={User} />
+          <Route exact path="/topics/:id" component={Topic} />
           <Route exact path="/groups/:id" component={Group}/>
         </Switch>
       </div>

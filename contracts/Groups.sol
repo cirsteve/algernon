@@ -13,6 +13,7 @@ contract Groups is Topics{
       uint256 fee;
       uint256 limit;
       uint256 balance;
+      uint256[] tagIds;
       MultiHash data;
       address owner;
       address[] members;
@@ -42,10 +43,10 @@ contract Groups is Topics{
 
     function () external {}
 
-    function createGroup(bytes32 _hash, uint8 _hashFunction, uint8 _size, uint256 _fee, uint256 _limit) public {
+    function createGroup( uint256 _fee, uint256 _limit, uint256[] memory _tagIds, bytes32 _hash, uint8 _hashFunction, uint8 _size) public {
       MultiHash memory multihash = createMultiHash(_hash, _hashFunction, _size);
       address[] memory members;
-      Group memory group = Group(groups.length, _fee, _limit, 0, multihash, msg.sender, members);
+      Group memory group = Group(groups.length, _fee, _limit, 0, _tagIds, multihash, msg.sender, members);
       groups.push(group);
       userOwnedGroups[msg.sender].push(group.id);
       emit GroupCreated(group.id, group.owner);
@@ -81,6 +82,14 @@ contract Groups is Topics{
     function updateGroupNote (uint256 _id, bytes32 _hash, uint8 _hashFunction, uint8 _size) public {
       MultiHash memory multihash = MultiHash(_hash, _hashFunction, _size);
       userGroupNotes[msg.sender][_id] = multihash;
+    }
+
+    function addGroupTags(uint256[] memory _ids, uint256 _groupId) public onlyGroupOwner(_groupId) {
+      addTags(_ids, groups[_groupId].tagIds);
+    }
+
+    function removeGroupTag(uint256 _id, uint256 _groupId) public onlyGroupOwner(_groupId) {
+      removeTag(_id, groups[_groupId].tagIds);
     }
 
     function claimBalance () public {

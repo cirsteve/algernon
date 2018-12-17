@@ -12,6 +12,14 @@ const contract = [
     type: 'number',
     required: true,
     default: 0
+  },
+  {
+    name: 'tags',
+    label: 'Tags',
+    type: 'select',
+    multiple: true,
+    default: [],
+    options: []
   }
 ]
 
@@ -25,18 +33,18 @@ const offChain = [
   },
   {
     name: 'description',
+    label: 'Description',
+    type: 'string',
+    multiline: true,
+    require: false,
+    default: ''
+  },
+  {
+    name: 'content',
     label: 'Content',
     type: 'richText',
     required: true,
     default: ''
-  },
-  {
-    name: 'tags',
-    label: 'Tags',
-    type: 'select',
-    multiple: true,
-    default: [],
-    options: []
   }
 ]
 

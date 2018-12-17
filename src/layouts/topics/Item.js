@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
 import { getMultihash } from '../../util/multihash'
-import IpfsBlob from '../common/IpfsBlob'
+import IpfsContent from '../common/IpfsContent'
 
 class Item extends Component {
   constructor (props, context) {
     super(props)
-    this.topicKey = context.drizzle.contracts.Groups.methods.getTopic.cacheCall(props.address, props.idx)
+    this.topicKey = context.drizzle.contracts.Groups.methods.getTopic.cacheCall(props.id)
   }
 
   getRenderValues = () => {
@@ -18,11 +18,13 @@ class Item extends Component {
   }
 
   render () {
+    const { id, noLink } = this.props
     const { topicResponse } = this.getRenderValues();
     let topic = 'Loading Topic'
 
     if (Array.isArray(topicResponse)) {
-        topic = <IpfsBlob hash={getMultihash(topicResponse)} />
+        const link = noLink ? null : `/topics/${id}`
+        topic = <IpfsContent hash={getMultihash(topicResponse)} link={link} />
     }
 
     return (
@@ -40,7 +42,7 @@ Item.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
-    Groups: state.contracts.Group
+    Groups: state.contracts.Groups
   }
 }
 

@@ -2,4 +2,4 @@ import React from 'react'
 import Item from './Item'
 import { range } from 'lodash'
 
-export default ({count, address}) => count ? range(count).map(idx => <Item key={idx} idx={idx} address={address} />) : 'no topics'
+export default ({ids}) => ids.length ? ids.map(id => <Item key={id} id={id}  />) : 'no topics'

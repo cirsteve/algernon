@@ -19,7 +19,7 @@ function* ipfsUploadThenSave(action) {
    try {
       const hash = yield call(ipfs.add, Buffer.from(action.payload.upload, 'utf-8'));
       const { digest, hashFunction, size } = getBytes32FromMultihash(hash[0].path)
-      console.log('got the hash: ', digest, hashFunction, size )
+      console.log('got the hash: ', action.payload.save, digest, hashFunction, size )
       action.payload.save(digest, hashFunction, size)
 
    } catch (e) {
@@ -33,7 +33,7 @@ function* getIpfs(action) {
     try {
 
       const fields = yield call(ipfs.get, url);
-  
+
       const payload = {
         fields: action.payload.noParse ?
           fields[0].content.toString() : JSON.parse(fields[0].content.toString()),

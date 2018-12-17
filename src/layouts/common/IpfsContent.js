@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles';
 import GridListTile from '@material-ui/core/GridListTile';
+import Html from './Html'
 
 const styles = theme => ({
   root: {
@@ -28,14 +30,14 @@ class Tile extends Component {
     }
   }
   render () {
-    let ipfsContent = 'Loading info IPFS';
+    const {link, hashedContent, hash } = this.props
+    let ipfsContent = 'Loading info IPFS'
 
-    if (this.props.hashedContent[this.props.hash]) {
-      console.log('ipfs content: ', this.props.hashedContent)
-      const values = this.props.hashedContent[this.props.hash];
+    if (hashedContent[hash]) {
+      const values = hashedContent[hash];
       ipfsContent = Object.keys(values).map((k, idx)=> (
         <div key={k}>
-          {k}: {values[k]}
+          {k}: {k === 'notes' ? <Html html={values[k]} /> : link && idx === 0 ? <Link to={link}>{values[k]}</Link> : values[k]}
         </div>
       ))
     }

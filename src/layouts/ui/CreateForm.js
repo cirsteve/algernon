@@ -96,20 +96,9 @@ class Create extends Component {
 
     return (
       <Fragment>
-        <Button onClick={this.updateShowingForm.bind(this, true)} color="primary">
-          {this.props.buttonText}
-        </Button>
-
-        <DialogForm
-          title={this.props.dialogFormTitle}
-          open={this.state.open}
-          text={this.props.dialogText}
-          handleClose={this.updateShowingForm.bind(this, false)}
-          submitLabel={this.props.submitLabel}
-          onSubmit={this.submit}
-          content={fields} />
+        {fields}
+        
         <Dialog
-          title={this.props.dialogTitle}
           open={this.state.openInfo}
           handleClose={this.updateShowingInfo.bind(this, false)}
           content={dialogContent} />

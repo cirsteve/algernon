@@ -3,8 +3,12 @@ import List from './List'
 import CreateTopic from '../ui/CreateTopic'
 
 
-export default ({count, address}) =>
+export default ({topicIds}) =>
   <div>
     <CreateTopic />
-    <List count={count} address={address}/>
+    {topicIds ?
+      <List ids={topicIds} />
+      :
+      'Loading Topics...'
+    }
   </div>

@@ -3,14 +3,14 @@ import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button';
 
-class Enroll extends Component {
+class Add extends Component {
 
-  submit = () => this.context.drizzle.contracts.Groups.methods.enroll.cacheSend(this.props.id, {value: this.props.value})
+  submit = () => this.context.drizzle.contracts.Groups.methods.addMasterTag.cacheSend(this.props.tag)
 
   render () {
     return (
       <Button onClick={this.submit} color="primary">
-        Enroll
+        Add Tag to List
       </Button>
     )
   }
@@ -20,4 +20,4 @@ Enroll.contextTypes = {
   drizzle: PropTypes.object
 }
 
-export default drizzleConnect(Enroll);
+export default drizzleConnect(Add);

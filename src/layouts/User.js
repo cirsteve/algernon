@@ -15,7 +15,7 @@ class User extends Component {
 
     this.userGroupsKey = this.methods.getUserGroupIds.cacheCall(this.address)
     this.userOwnedGroupsKey = this.methods.getUserOwnedGroupIds.cacheCall(this.address)
-    this.topicCountKey = this.methods.getTopicCount.cacheCall(this.address)
+    this.topicIdsKey = this.methods.getUserTopicIds.cacheCall(this.address)
   }
 
   getRenderValues = () => {
@@ -25,18 +25,18 @@ class User extends Component {
         Groups.getUserGroupIds[this.userGroupsKey].value : null,
       ownedIds: Groups.getUserOwnedGroupIds[this.userOwnedGroupsKey] ?
         Groups.getUserOwnedGroupIds[this.userOwnedGroupsKey].value : null,
-      topicCount: Groups.getTopicCount[this.topicCountKey] ?
-        parseInt(Groups.getTopicCount[this.topicCountKey].value, 10) : null
+      topicIds: Groups.getUserTopicIds[this.topicIdsKey] ?
+        Groups.getUserTopicIds[this.topicIdsKey].value : null
     }
   }
 
   render () {
-    const { groupIds, ownedIds, topicCount } = this.getRenderValues();
+    const { groupIds, ownedIds, topicIds } = this.getRenderValues();
 
     const tabs = [
       {
         label: `Topics`,
-        content: <TopicSection key='topic' address={this.address} count={topicCount} />
+        content: <TopicSection key='topic' address={this.address} topicIds={topicIds} />
       },
       {
         label: 'Enrolled Groups',
@@ -60,7 +60,6 @@ User.contextTypes = {
   drizzle: PropTypes.object
 }
 
-// May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
     Groups: state.contracts.Groups
