@@ -11,7 +11,7 @@ import Blockie from './Blockie';
 
 const styles = {
   root: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   grow: {
     flexGrow: 1,
@@ -20,6 +20,10 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
   },
+  link: {
+    color : '#fff',
+    marginRight: '10px'
+  }
 };
 
 function ButtonAppBar(props) {
@@ -29,11 +33,11 @@ function ButtonAppBar(props) {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" color="inherit" className={classes.grow}>
-            <Link to="/">
+            <Link to="/" className={classes.link}>
               Algernon
             </Link>
           </Typography>
-          <Link to={`/tags`}>
+          <Link to={`/tags`} className={classes.link}>
             Tags
           </Link>
           <Link to={`/users/${address}`}>

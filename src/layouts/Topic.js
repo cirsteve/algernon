@@ -33,15 +33,19 @@ class Topic extends Component {
     const { tags } = this.props
     const {topicResponse, tagIdsResponse} = this.getRenderValues()
     let topic = 'loading'
+    let topicTags = []
+
+    if (tagIdsResponse.length) {
+      topicTags = tagIdsResponse.map(id=> tags[parseInt(id)])
+    }
 
     if (topicResponse) {
       const hash = getMultihash(topicResponse)
-      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tags={tags}/>
+      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tags={topicTags}/>
     }
 
     return (
       <div>
-        <h3>Topic</h3>
         {topic}
       </div>
     )

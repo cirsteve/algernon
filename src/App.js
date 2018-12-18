@@ -12,6 +12,15 @@ import './css/oswald.css'
 import './css/open-sans.css'
 import './css/pure-min.css'
 import './App.css'
+const contentStyle = {
+  display: 'flex',
+  justifyContent: 'center',
+  marginTop: '1em'
+}
+
+const innerContentStyle = {
+  width: '650px',
+}
 
 class App extends Component {
 
@@ -20,13 +29,17 @@ class App extends Component {
     return (
       <div className="App">
         <TopBar />
-        <Switch>
-          <Route exact path="/" component={Home}/>
-          <Route exact path="/users/:address" component={User} />
-          <Route exact path="/topics/:id" component={Topic} />
-          <Route exact path="/groups/:id" component={Group} />
-          <Route exact path="/tags" component={Tags} />
-        </Switch>
+        <div style={contentStyle}>
+          <div style={innerContentStyle}>
+            <Switch>
+              <Route exact path="/" component={Home}/>
+              <Route exact path="/users/:address" component={User} />
+              <Route exact path="/topics/:id" component={Topic} />
+              <Route exact path="/groups/:id" component={Group} />
+              <Route exact path="/tags" component={Tags} />
+            </Switch>
+          </div>
+        </div>
       </div>
     );
   }

@@ -10,6 +10,7 @@ import RichText from '../common/forms/RichText'
 import schema from '../../schemas/topic'
 import UpdateTopic from '../ui/UpdateTopic'
 import TagItem from '../tags/Item'
+import Chip from '../common/Chip'
 
 const styles = theme => ({
   root: {
@@ -99,15 +100,15 @@ class Detail extends Component {
 
       topic =
         <Fragment>
-          <h4>
+          <h1>
             {topicFields.title}
-          </h4>
+          </h1>
           <a href={topicFields.url} target="blank">{topicFields.url}</a>
           <div>
             {topicFields.description}
           </div>
           <div>
-            Tags: {tags.map(tag => <div>{tag}</div>)}
+            Tags: {tags.map(tag => <Chip label={tag} />)}
           </div>
           <div>
             {note}
