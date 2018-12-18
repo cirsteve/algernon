@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
-import { range } from 'lodash'
 
 import Tabs from './common/Tabs'
 import GroupList from './groups/List'

@@ -1,15 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles';
-import GridListTile from '@material-ui/core/GridListTile';
 import Html from '../common/Html'
 import Button from '../common/forms/Button'
 import RichText from '../common/forms/RichText'
 import schema from '../../schemas/topic'
 import UpdateTopic from '../ui/UpdateTopic'
-import TagItem from '../tags/Item'
 import Chip from '../common/Chip'
 
 const styles = theme => ({

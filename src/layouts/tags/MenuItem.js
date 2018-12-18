@@ -21,11 +21,9 @@ class Item extends Component {
     const {id} = this.props
     const { tagResponse } = this.getRenderValues();
     let tag = 'Loading Tag'
-    let disabled = true
 
     if (tagResponse) {
       tag = tagResponse
-      disabled = false
     }
 
     return (

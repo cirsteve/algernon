@@ -1,7 +1,6 @@
 import React from 'react'
 import schema from '../../schemas/topic'
 import Create from './Create'
-import MenuItem from '../tags/MenuItem'
 
 export default ({tags}) =>
   <Create

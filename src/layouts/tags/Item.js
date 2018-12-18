@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
-import { getMultihash } from '../../util/multihash'
-import IpfsContent from '../common/IpfsContent'
 
 class Item extends Component {
   constructor (props, context) {
