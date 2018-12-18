@@ -16,22 +16,27 @@ class Topic extends Component {
 
   }
 
+  componentDidMount () {
+    const { getTagCount, getTag } = this.methods
+
+    this.props.getTags(getTagCount, getTag)
+  }
+
   getRenderValues = () => ({
     topicResponse: this.props.Groups.getTopic[this.topicKey] ?
       Object.values(this.props.Groups.getTopic[this.topicKey].value) : null,
     tagIdsResponse: this.props.Groups.getTopicTagIds[this.tagIdsKey] ?
-      Object.values(this.props.Groups.getTopicTagIds[this.tagIdsKey].value) : null
+      Object.values(this.props.Groups.getTopicTagIds[this.tagIdsKey].value) : []
   })
 
   render () {
+    const { tags } = this.props
     const {topicResponse, tagIdsResponse} = this.getRenderValues()
     let topic = 'loading'
-    console.log('render topic: ', this.topicKey, topicResponse)
 
     if (topicResponse) {
       const hash = getMultihash(topicResponse)
-      console.log('render topic: ', this.topicKey, topicResponse, hash)
-      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} />
+      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tags={tags}/>
     }
 
     return (
@@ -49,8 +54,16 @@ Topic.contextTypes = {
 
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups
+    Groups: state.contracts.Groups,
+    tags: state.tags.tags
   }
 }
 
-export default drizzleConnect(withRouter(Topic), mapState)
+const mapDispatch = (dispatch) => {
+    return {
+        getTags: (getTagCount, getTag) => dispatch({type: 'GET_TAGS', payload: {getTagCount, getTag}}),
+
+    };
+}
+
+export default drizzleConnect(withRouter(Topic), mapState, mapDispatch)

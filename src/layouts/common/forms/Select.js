@@ -9,11 +9,15 @@ const SelectUI = props =>
   <FormControl className={props.classes.formControl}>
     <InputLabel>{props.label}</InputLabel>
     <Select
-      multiple={props.multiple}
+      multiple
       value={props.value}
       onChange={props.onChange}
     >
-      {props.options.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)}
+      {props.optionItems ?
+        props.optionItems.map(item => item)
+        :
+        props.options.map(o => <MenuItem key={o.value} value={o.value}>{o.label}</MenuItem>)
+      }
     </Select>
   </FormControl>
 

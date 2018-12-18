@@ -41,14 +41,16 @@ class Create extends Component {
 
   updateShowingInfo = openInfo => this.setState({...this.state, openInfo})
 
-  updateContractField = (field, e, val) =>
+  updateContractField = (field, e, val) => {
+    console.log('update c field', field, e)
     this.setState({
       ...this.state,
       contractFields: {
         ...this.state.contractFields,
-        [field]: e.target.value
+        [field]: e.target.options ? e.target.options : e.target.value
       }
     })
+  }
 
   updateOffChainField = (field, e, val) => {
     this.setState({
@@ -70,24 +72,29 @@ class Create extends Component {
   }
 
   render () {
+    const { schema, uploadedHashes, options, optionItems } = this.props
 
-    const contractFields = [...this.props.schema.contract].map(f => {
+    const contractFields = [...schema.contract].map(f => {
       f.value = this.state.contractFields[f.name]
       f.onChange = this.updateContractField.bind(this, f.name)
       f.key = f.name
+      f.options = options && options[f.name]
+      f.optionItems = optionItems && optionItems[f.name]
       return f;
     })
 
-    const offChainFields = [...this.props.schema.offChain].map(f => {
+    const offChainFields = [...schema.offChain].map(f => {
       f.value = this.state.offChainFields[f.name]
       f.onChange = this.updateOffChainField.bind(this, f.name)
       f.key = f.name
+      f.options = options && options[f.name]
+      f.optionItems = optionItems && optionItems[f.name]
       return f;
     })
 
     const fields = contractFields.concat(offChainFields).map(f => INPUT_MAP[f.type](f) )
 
-    const dialogContent = this.state.hashId && this.props.uploadedHashes[this.state.hashId] ?
+    const dialogContent = this.state.hashId && uploadedHashes[this.state.hashId] ?
       'Complete Your Submission wtih MetaMask'
       :
       'Preparing Your Transaction'

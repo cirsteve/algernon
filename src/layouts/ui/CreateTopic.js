@@ -1,10 +1,12 @@
 import React from 'react'
 import schema from '../../schemas/topic'
 import Create from './Create'
+import MenuItem from '../tags/MenuItem'
 
-export default () =>
+export default ({tags}) =>
   <Create
     schema={schema}
+    options={{tags: tags.map((tag, idx) => ({value: idx, label:tag})) }}
     contractSubmit='createTopic'
     submitLabel='Submit Topic'
     buttonText='Create Topic'

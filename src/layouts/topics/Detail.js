@@ -9,6 +9,7 @@ import Button from '../common/forms/Button'
 import RichText from '../common/forms/RichText'
 import schema from '../../schemas/topic'
 import UpdateTopic from '../ui/UpdateTopic'
+import TagItem from '../tags/Item'
 
 const styles = theme => ({
   root: {
@@ -75,7 +76,7 @@ class Detail extends Component {
   }
 
   render () {
-    const { hashedContent, hash, owner, connectedAddress, id } = this.props
+    const { hashedContent, hash, owner, connectedAddress, id, tags } = this.props
     const { notes } = this.state.offChainFields
     let topic = 'Loading Topic'
     console.log('render detail: ', hashedContent, hash)
@@ -104,6 +105,9 @@ class Detail extends Component {
           <a href={topicFields.url} target="blank">{topicFields.url}</a>
           <div>
             {topicFields.description}
+          </div>
+          <div>
+            Tags: {tags.map(tag => <div>{tag}</div>)}
           </div>
           <div>
             {note}

@@ -26,8 +26,12 @@ contract Tags {
     _sourceIdxs.length--;
   }
 
-  function doesTaxExist(string memory _tag) public view returns (bool) {
+  function doesTagExist(string memory _tag) public view returns (bool) {
     return tagExists[_tag];
+  }
+
+  function getTagCount() public view returns (uint256) {
+    return tags.length;
   }
 
   function getTag(uint256 _id) public view returns (string memory) {

@@ -16,7 +16,7 @@ class Add extends Component {
   }
 }
 
-Enroll.contextTypes = {
+Add.contextTypes = {
   drizzle: PropTypes.object
 }
 

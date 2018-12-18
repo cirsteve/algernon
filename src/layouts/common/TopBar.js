@@ -33,6 +33,9 @@ function ButtonAppBar(props) {
               Algernon
             </Link>
           </Typography>
+          <Link to={`/tags`}>
+            Tags
+          </Link>
           <Link to={`/users/${address}`}>
             <Blockie address={address} />
           </Link>
