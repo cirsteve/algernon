@@ -1,0 +1,23 @@
+# This file is a template, and might need editing before it works on your project.
+image: cirsteve/truffle
+
+# This folder is cached between builds
+# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
+cache:
+  paths:
+  - node_modules/
+
+pages:
+  stage: deploy
+  script:
+  - npm install
+  - truffle compile
+  - truffle migrate --network rinkeby
+  - npm run build
+  - cp -rf build_webpack/* public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
+
