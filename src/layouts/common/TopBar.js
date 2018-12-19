@@ -22,7 +22,7 @@ const styles = {
   },
   link: {
     color : '#fff',
-    marginRight: '10px'
+    marginRight: '25px'
   }
 };
 
@@ -37,6 +37,12 @@ function ButtonAppBar(props) {
               Algernon
             </Link>
           </Typography>
+          <Link to={`/topics`} className={classes.link}>
+            Topics
+          </Link>
+          <Link to={`/groups`} className={classes.link}>
+            Groups
+          </Link>
           <Link to={`/tags`} className={classes.link}>
             Tags
           </Link>

@@ -103,7 +103,7 @@ class Create extends Component {
 
     return (
       <Fragment>
-        <Button onClick={this.updateShowingForm.bind(this, true)} color="primary">
+        <Button variant="contained" onClick={this.updateShowingForm.bind(this, true)} color="primary">
           {this.props.buttonText}
         </Button>
 

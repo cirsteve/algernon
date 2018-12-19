@@ -46,6 +46,10 @@ contract Topics is Multihash, Tags {
     removeTag(_idx, topic.tagIds);
   }
 
+  function getTopicCount() public view returns (uint256) {
+    return topics.length;
+  }
+
   function getUserTopicCount(address _user) public view returns (uint256) {
     return userTopicIds[_user].length;
   }

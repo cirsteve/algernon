@@ -36,7 +36,6 @@ Item.contextTypes = {
   drizzle: PropTypes.object
 }
 
-// May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
     Groups: state.contracts.Groups

@@ -9,7 +9,7 @@ class Enroll extends Component {
 
   render () {
     return (
-      <Button onClick={this.submit} color="primary">
+      <Button variant="contained" onClick={this.submit} color="primary">
         Enroll
       </Button>
     )

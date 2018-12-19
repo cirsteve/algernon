@@ -1,10 +1,11 @@
-import React, { Component, Fragment } from 'react'
+import React from 'react'
 import schema from '../../schemas/group'
 import Create from './Create'
 
-export default () =>
+export default ({tags}) =>
   <Create
     schema={schema}
+    options={{tags: tags.map((tag, idx) => ({value: idx, label:tag})) }}
     contractSubmit='createGroup'
     submitLabel='Submit Group'
     buttonText='Create Group'

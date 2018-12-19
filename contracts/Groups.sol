@@ -23,7 +23,6 @@ contract Groups is Topics{
     mapping (address => uint256[]) userGroups;
     mapping (address => uint256[]) userOwnedGroups;
     mapping (address => uint256) userBalances;
-    mapping (address => mapping (uint256 => MultiHash)) userGroupNotes;
 
     event UserEnrolled(address user, uint256 _id);
     event GroupCreated(uint256 id, address owner);
@@ -79,11 +78,6 @@ contract Groups is Topics{
       group.data = multihash;
     }
 
-    function updateGroupNote (uint256 _id, bytes32 _hash, uint8 _hashFunction, uint8 _size) public {
-      MultiHash memory multihash = MultiHash(_hash, _hashFunction, _size);
-      userGroupNotes[msg.sender][_id] = multihash;
-    }
-
     function addGroupTags(uint256[] memory _ids, uint256 _groupId) public onlyGroupOwner(_groupId) {
       addTags(_ids, groups[_groupId].tagIds);
     }
@@ -136,11 +130,6 @@ contract Groups is Topics{
 
     function getUserGroupIds (address _user) public view returns (uint256[] memory) {
       return userGroups[_user];
-    }
-
-    function getUserNote (address _user, uint256 _id) public view returns (bytes32, uint8, uint8) {
-      MultiHash storage note = userGroupNotes[_user][_id];
-      return (note.hash, note.hashFunction, note.size);
     }
 
  }

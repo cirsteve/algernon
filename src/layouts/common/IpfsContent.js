@@ -37,7 +37,7 @@ class Tile extends Component {
       const values = hashedContent[hash];
       ipfsContent = Object.keys(values).map((k, idx)=> (
         <div key={k}>
-          {k}: {k === 'notes' ? <Html html={values[k]} /> : link && idx === 0 ? <Link to={link}>{values[k]}</Link> : values[k]}
+          {k}: {k === 'notes' || k === 'content' ? <Html html={values[k]} /> : link && idx === 0 ? <Link to={link}>{values[k]}</Link> : values[k]}
         </div>
       ))
     }

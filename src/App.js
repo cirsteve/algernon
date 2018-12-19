@@ -3,7 +3,9 @@ import {Route, Switch } from 'react-router-dom'
 import Home from './layouts/Home'
 import User from './layouts/User'
 import Group from './layouts/Group'
+import Groups from './layouts/Groups'
 import Topic from './layouts/Topic'
+import Topics from './layouts/Topics'
 import Tags from './layouts/Tags'
 import TopBar from './layouts/common/TopBar'
 
@@ -34,7 +36,9 @@ class App extends Component {
             <Switch>
               <Route exact path="/" component={Home}/>
               <Route exact path="/users/:address" component={User} />
+              <Route exact path="/topics" component={Topics} />
               <Route exact path="/topics/:id" component={Topic} />
+              <Route exact path="/groups" component={Groups} />
               <Route exact path="/groups/:id" component={Group} />
               <Route exact path="/tags" component={Tags} />
             </Switch>

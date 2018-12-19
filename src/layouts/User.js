@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom'
 
 import Tabs from './common/Tabs'
 import GroupList from './groups/List'
+import GroupSection from './groups/Section'
 import TopicSection from './topics/Section'
 
 class User extends Component {
@@ -54,7 +55,7 @@ class User extends Component {
       },
       {
         label: 'Owned Groups',
-        content: <GroupList key='owned' ids={ownedIds} />
+        content: <GroupSection key='owned' groupIds={ownedIds} tags={tags} />
       }
     ]
 

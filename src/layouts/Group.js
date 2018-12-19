@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
+import { Link } from 'react-router-dom'
+import { getMultihash } from '../util/multihash'
+import IpfsContent from './common/IpfsContent'
 import Enroll from './ui/Enroll'
 
 class Group extends Component {
@@ -16,41 +19,53 @@ class Group extends Component {
 
   getRenderValues = () => {
     return {
-      groupResponse: this.props.Groups.getGroupInfo[this.groupInfoKey] ?
-        Object.values(this.props.Groups.getGroupInfo[this.groupInfoKey].value) : null,
-      membersResponse: this.props.Groups.getGroupData[this.groupDataKey] ?
-        this.props.Groups.getGroupData[this.groupDataKey ].value : null
+      groupResponse: this.props.Groups.getGroup[this.groupKey] ?
+        Object.values(this.props.Groups.getGroup[this.groupKey].value) : null,
+      membersResponse: this.props.Groups.getGroupMembers[this.membersKey] ?
+        this.props.Groups.getGroupMembers[this.membersKey].value : null
       }
   }
 
-  updateUserNote = userNote => {
-    console.log('un: ', userNote)
-    this.setState({...this.state, userNote})
-  }
-
   render () {
+    const { address} = this.props
     const { groupResponse, membersResponse } = this.getRenderValues()
 
     let group = 'Loading Group'
     let members = 'loading members'
+    let enroll = null
     if (Array.isArray(groupResponse)) {
       group =
         <div>
-          <Enroll id={this.id} value={groupResponse[1]} />
+          <IpfsContent hash={getMultihash(groupResponse.slice(5))} />
+          <div>
+            Fee: {groupResponse[1]}
+          </div>
+          <div>
+            Limit: {groupResponse[2]}
+          </div>
+          <div>
+            Owner: <Link to={`/users/${groupResponse[4]}`}>{groupResponse[4]}</Link>
+          </div>
         </div>
     }
 
     if (Array.isArray(membersResponse)) {
       members =
         <div>
-          {membersResponse.map(addr => addr)}
+          {membersResponse.map(addr => <Link to={`/users/${addr}`}>{addr}</Link>)}
         </div>
+    }
+
+    if (Array.isArray(membersResponse)) {
+      enroll = Array.isArray(groupResponse) && membersResponse.find(m => m === address) ? 'Enrolled' : <Enroll id={this.id} value={groupResponse[1]} />
     }
 
     return (
       <div>
         <h3>Group</h3>
+        {enroll}
         {group}
+        <h3>Members</h3>
         {members}
       </div>
     )
@@ -64,6 +79,7 @@ Group.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
+    address: state.accounts[0],
     Groups: state.contracts.Groups,
   }
 }
