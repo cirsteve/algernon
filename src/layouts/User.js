@@ -14,10 +14,14 @@ class User extends Component {
     this.methods = context.drizzle.contracts.Groups.methods
     this.address = props.match.params.address
 
-    this.userGroupsKey = this.methods.getUserGroupIds.cacheCall(this.address)
+    this.userGroupsKey = this.methods.getUserGroups.cacheCall(this.address)
     this.userOwnedGroupsKey = this.methods.getUserOwnedGroupIds.cacheCall(this.address)
     this.topicIdsKey = this.methods.getUserTopicIds.cacheCall(this.address)
     this.tagCountKey = this.methods.getTagCount.cacheCall()
+    this.privateTopicIdsKey = ''
+    if (props.connectedAddress === this.address) {
+      this.privateTopicIdsKey = this.methods.getUserPrivateTopicIds.cacheCall()
+    }
   }
 
   componentDidMount () {
@@ -29,12 +33,14 @@ class User extends Component {
   getRenderValues = () => {
     const { Groups } = this.props
     return {
-      groupIds: Groups.getUserGroupIds[this.userGroupsKey] ?
-        Groups.getUserGroupIds[this.userGroupsKey].value : null,
+      groups: Groups.getUserGroups[this.userGroupsKey] ?
+        Groups.getUserGroups[this.userGroupsKey].value : null,
       ownedIds: Groups.getUserOwnedGroupIds[this.userOwnedGroupsKey] ?
         Groups.getUserOwnedGroupIds[this.userOwnedGroupsKey].value : null,
       topicIds: Groups.getUserTopicIds[this.topicIdsKey] ?
         Groups.getUserTopicIds[this.topicIdsKey].value : null,
+      privateTopicIds: Groups.getUserPrivateTopicIds[this.privateTopicIdsKey] ?
+        Groups.getUserPrivateTopicIds[this.privateTopicIdsKey].value : null,
       tagCount: Groups.getTagCount[this.tagCountKey] ?
         parseInt(Groups.getTagCount[this.tagCountKey].value) : null
     }
@@ -42,7 +48,7 @@ class User extends Component {
 
   render () {
     const { tags } = this.props
-    const { groupIds, ownedIds, topicIds } = this.getRenderValues();
+    const { groups, ownedIds, topicIds, privateTopicIds } = this.getRenderValues();
 
     const tabs = [
       {
@@ -51,13 +57,21 @@ class User extends Component {
       },
       {
         label: 'Enrolled Groups',
-        content: <GroupList key='groups' ids={groupIds} />
+        content: <GroupList key='groups' groups={groups} />
       },
       {
         label: 'Owned Groups',
         content: <GroupSection key='owned' groupIds={ownedIds} tags={tags} />
       }
     ]
+
+    if (privateTopicIds) {
+      const privateTopics = {
+        label: `Private Topics`,
+        content: <TopicSection key='privateTopic' address={this.address} topicIds={privateTopicIds} tags={tags}  privateTopics={true} />
+      }
+      tabs.splice(1,0, privateTopics)
+    }
 
     return (
       <div>
@@ -73,6 +87,7 @@ User.contextTypes = {
 
 const mapState = state => {
   return {
+    connectedAddress: state.accounts[0],
     Groups: state.contracts.Groups,
     tags: state.tags.tags
   }

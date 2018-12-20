@@ -25,7 +25,7 @@ class Topics extends Component {
     if (Array.isArray(topicCountResponse)) {
       const count = parseInt(topicCountResponse[0])
       if (count) {
-        topics = range(count).map(id => <TopicItem key={id} id={id} />)
+        topics = range(count).map(id => <TopicItem key={id} id={id} method='getTopic'/>)
       } else {
         topics = 'No topics'
       }

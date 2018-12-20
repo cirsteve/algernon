@@ -105,7 +105,7 @@ class Detail extends Component {
             {topicFields.description}
           </div>
           <div>
-            Tags: {tags.map(tag => <Chip label={tag} />)}
+            Tags: {tags.map(tag => <Chip key={tag} label={tag} />)}
           </div>
           <div>
             {note}

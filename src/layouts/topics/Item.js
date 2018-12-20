@@ -7,23 +7,23 @@ import IpfsContent from '../common/IpfsContent'
 class Item extends Component {
   constructor (props, context) {
     super(props)
-    this.topicKey = context.drizzle.contracts.Groups.methods.getTopic.cacheCall(props.id)
+    this.topicKey = context.drizzle.contracts.Groups.methods[props.method].cacheCall(props.id)
   }
 
   getRenderValues = () => {
     return {
-      topicResponse: this.props.Groups.getTopic[this.topicKey] ?
-        Object.values(this.props.Groups.getTopic[this.topicKey].value) : null
+      topicResponse: this.props.Groups[this.props.method][this.topicKey] ?
+        Object.values(this.props.Groups[this.props.method][this.topicKey].value) : null
     }
   }
 
   render () {
-    const { id, noLink } = this.props
+    const { noLink, linkTo } = this.props
     const { topicResponse } = this.getRenderValues();
     let topic = 'Loading Topic'
 
     if (Array.isArray(topicResponse)) {
-        const link = noLink ? null : `/topics/${id}`
+        const link = noLink ? null : linkTo
         topic = <IpfsContent hash={getMultihash(topicResponse)} link={link} />
     }
 

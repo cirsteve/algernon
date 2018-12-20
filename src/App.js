@@ -5,6 +5,7 @@ import User from './layouts/User'
 import Group from './layouts/Group'
 import Groups from './layouts/Groups'
 import Topic from './layouts/Topic'
+import PrivateTopic from './layouts/PrivateTopic'
 import Topics from './layouts/Topics'
 import Tags from './layouts/Tags'
 import TopBar from './layouts/common/TopBar'
@@ -38,6 +39,7 @@ class App extends Component {
               <Route exact path="/users/:address" component={User} />
               <Route exact path="/topics" component={Topics} />
               <Route exact path="/topics/:id" component={Topic} />
+              <Route exact path="/privatetopics/:id" component={PrivateTopic} />
               <Route exact path="/groups" component={Groups} />
               <Route exact path="/groups/:id" component={Group} />
               <Route exact path="/tags" component={Tags} />
