@@ -7,15 +7,17 @@ function* getTag(get, id) {
 }
 
 function* getTags(action) {
-    console.log('getting tags', action)
+    let { from, to } = action.payload
     try {
       //const count = yield call(action.payload.getTagCount)
-      const count = yield call(action.payload.getTagCount().call)
-      console.log('tag count is: ', count);
-      let i = 0;
-      while ( i < parseInt(count)) {
-        yield getTag(action.payload.getTag, i)
-        i++
+      if (!to || !from) {
+        const count = yield call(action.payload.getTagCount().call)
+        from = 0;
+        to = parseInt(count);
+      }
+      while ( from < to) {
+        yield getTag(action.payload.getTag, from)
+        from++
       }
     } catch (e) {
       console.log('tag err: ', e);
@@ -23,9 +25,15 @@ function* getTags(action) {
     }
 }
 
+function* getTagCount(action) {
+  const count = yield call(action.payload.getTagCount().call)
+  yield put({type: "TAG_COUNT", payload: {count}});
+}
+
 function* sagas() {
   yield all([
-      yield takeEvery("GET_TAGS", getTags)
+      yield takeEvery("GET_TAGS", getTags),
+      yield takeEvery("GET_TAG_COUNT", getTagCount)
   ])
 }
 

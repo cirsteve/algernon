@@ -17,7 +17,7 @@ function* ipfsUpload(action) {
 function* ipfsUploadThenSave(action) {
   console.log('ipfs uploading', action);
    try {
-      const hash = yield call(ipfs.add, Buffer.from(action.payload.upload, 'utf-8'));
+      const hash = yield call(ipfs.add, Buffer.from(action.payload.upload, 'utf-8'), {pin:true});
       const { digest, hashFunction, size } = getBytes32FromMultihash(hash[0].path)
       console.log('got the hash: ', action.payload.save, digest, hashFunction, size )
       action.payload.save(digest, hashFunction, size)
