@@ -6,6 +6,7 @@ import './Tags.sol';
 /** @title Users. */
 contract Topics is Multihash, Tags {
   uint256 topicId;
+  uint256 privateTopicId;
   struct Topic {
     uint256 id;
     uint256[] tagIds;
@@ -31,10 +32,10 @@ contract Topics is Multihash, Tags {
   }
 
   function createPrivateUserTopic(uint256[] memory _tagIds, MultiHash memory _multiHash, address _user) internal returns (uint256) {
-    Topic memory topic = Topic(topicId, _tagIds, _user, _multiHash);
+    Topic memory topic = Topic(privateTopicId, _tagIds, _user, _multiHash);
     privateTopics.push(topic);
     userPrivateTopicIds[msg.sender].push(topic.id);
-    topicId++;
+    privateTopicId++;
     emit TopicCreated(topic.id, topic.owner);
 
     return topic.id;

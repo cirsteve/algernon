@@ -89,7 +89,7 @@ const mapState = state => {
   return {
     connectedAddress: state.accounts[0],
     Groups: state.contracts.Groups,
-    tags: state.tags.tags
+    tags: Object.keys(state.tags.tags)
   }
 }
 

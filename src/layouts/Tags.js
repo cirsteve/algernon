@@ -50,7 +50,6 @@ class Tags extends Component {
       .filter(tag => fetchedTags.find(t =>  t === tag) === undefined  )
       .map(tag => <div key={tag} className={classes.loadingTag}>{tag} <Loading icon='spokes' height={30} width={30}/></div>)
 
-    console.log('pt: ', submittedTags, pendingTags, fetchedTags)
     if (Number.isInteger(tagCount)) {
       tags = range(tagCount).map(idx => <TagItem key={idx} idx={idx} />)
         .concat(pendingTags)
@@ -77,8 +76,8 @@ Tags.contextTypes = {
 const mapState = state => {
   return {
     Groups: state.contracts.Groups,
-    fetchedTags: state.tags.tags,
-    submittedTags: state.tags.submittedTags
+    fetchedTags: Object.keys(state.tags.tags),
+    submittedTags: Object.keys(state.tags.submittedTags)
   }
 }
 
