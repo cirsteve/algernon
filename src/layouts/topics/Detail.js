@@ -5,9 +5,13 @@ import { withStyles } from '@material-ui/core/styles';
 import Html from '../common/Html'
 import Button from '../common/forms/Button'
 import RichText from '../common/forms/RichText'
+import Fields from '../common/Fields'
 import schema from '../../schemas/topic'
 import UpdateTopic from '../ui/UpdateTopic'
 import Chip from '../common/Chip'
+import IconSubmit from '../common/forms/IconSubmit'
+import TagDetail from './TagDetail'
+import EditIcon from '@material-ui/icons/Edit'
 
 const styles = theme => ({
   root: {
@@ -31,6 +35,7 @@ class Detail extends Component {
     super(props)
     this.state = {
       editingNote: false,
+      editingMetaData: false,
       offChainFields: schema.offChain.reduce((acc, f) => {
         acc[f.name] = null;
         return acc;
@@ -52,9 +57,28 @@ class Detail extends Component {
     }
   }
 
+  updateEditingMetaData = (editingMetaData) => this.setState({...this.state, editingMetaData})
+
   updateEditingNote = (editingNote) => this.setState({...this.state, editingNote})
 
-  cancelEditNote = () =>  this.setState({...this.state, editingNote: false, offChainFields: {...this.state.offChainFields, notes: null}})
+  cancelEdit = () =>  this.setState(
+    {
+      ...this.state,
+      editingNote: false,
+      editingMetaData: false,
+      offChainFields: {
+        ...this.state.offChainFields,
+        notes: null,
+        title: null,
+        url: null,
+        description: null
+      }
+    }
+  )
+
+  onNoteSubmit = () => {
+    this.cancelEdit()
+  }
 
   updateOffChainField = (field, e, val) => {
     this.setState({
@@ -74,38 +98,64 @@ class Detail extends Component {
   }
 
   render () {
-    const { hashedContent, hash, owner, connectedAddress, id, tags } = this.props
+    const { hashedContent, hash, owner, connectedAddress, id, tagIds } = this.props
     const { notes } = this.state.offChainFields
     let topic = 'Loading Topic'
-    console.log('render detail: ', hashedContent, hash)
 
     if (hashedContent[hash]) {
       const topicFields = hashedContent[hash];
-          console.log('render detail: ', this.getOffChainFields(topicFields), this.state.offChainFields)
-
-      const note = this.state.editingNote ?
+      const doneEl = <UpdateTopic id={id} offChainFields={this.getOffChainFields(topicFields)} onSubmit={this.onNoteSubmit} />
+      const metaFieldNames = ['title', 'url', 'description']
+      const metaFields = schema.offChain
+        .filter(f => metaFieldNames.includes(f.name))
+        .map(f => ({...f, value: this.state.offChainFields[f.name] || topicFields[f.name], onChange: this.updateOffChainField.bind(this, f.name)}))
+      const metaData = this.state.editingMetaData ?
         <div>
-          <Button text="Cancel Edit" onClick={this.cancelEditNote.bind(this)} />
-          <UpdateTopic id={parseInt(id)} offChainFields={this.getOffChainFields(topicFields)} />
-          <RichText value={notes || topicFields.notes} onChange={this.updateOffChainField.bind(this, 'notes')} />
+          <IconSubmit onCancel={this.cancelEdit.bind(this)} doneEl={doneEl} />
+          <Fields fields={metaFields} />
         </div>
         :
         <div>
-          { connectedAddress === owner ? <Button text="Edit" onClick={this.updateEditingNote.bind(this, true)} /> : null}
-          <Html html={notes || topicFields.notes} />
-        </div>
-
-      topic =
-        <Fragment>
           <h1>
             {topicFields.title}
+            { connectedAddress === owner ?
+              <EditIcon onClick={this.updateEditingMetaData.bind(this, true)} />
+              :
+              null
+            }
           </h1>
           <a href={topicFields.url} target="blank">{topicFields.url}</a>
           <div>
             {topicFields.description}
           </div>
+        </div>
+
+
+      const note =
+        <div>
+          <h4>
+            Notes
+            { connectedAddress === owner ?
+              this.state.editingNote ?
+                <IconSubmit onCancel={this.cancelEdit.bind(this)} doneEl={doneEl} />
+                :
+                <EditIcon onClick={this.updateEditingNote.bind(this, true)} />
+              :
+              null
+            }
+          </h4>
+          {this.state.editingNote ?
+            <RichText value={this.state.offChainFields.notes || topicFields.notes} onChange={this.updateOffChainField.bind(this, 'notes')} />
+            :
+            <Html html={notes || topicFields.notes} />
+          }
+        </div>
+
+      topic =
+        <Fragment>
+          {metaData}
           <div>
-            Tags: {tags.map(tag => <Chip key={tag} label={tag} />)}
+            <TagDetail isOwner={connectedAddress === owner} tagIds={tagIds} topicId={parseInt(id)} />
           </div>
           <div>
             {note}

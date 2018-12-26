@@ -58,6 +58,18 @@ contract Topics is Multihash, Tags {
     topic.content = multihash;
   }
 
+  function updateTopicTags(uint256[] memory _tagIds, uint256 _topicId ) public {
+    Topic storage topic = topics[_topicId];
+    require(topic.owner == msg.sender);
+    topic.tagIds = _tagIds;
+  }
+
+  function updatePrivateTopicTags( uint256[] memory _tagIds, uint256 _topicId) public {
+    Topic storage topic = privateTopics[_topicId];
+    require(topic.owner == msg.sender);
+    topic.tagIds = _tagIds;
+  }
+
   function addTopicTags(uint256[] memory _ids, uint256 _topicId) public {
     Topic storage topic = topics[_topicId];
     require(topic.owner == msg.sender, 'Topic must be owned by sender to update');

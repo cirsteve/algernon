@@ -25,6 +25,7 @@ class User extends Component {
   }
 
   componentDidMount () {
+    console.log('user did mount')
     const { getTagCount, getTag } = this.methods
 
     this.props.getTags(getTagCount, getTag)
@@ -49,6 +50,7 @@ class User extends Component {
   render () {
     const { tags } = this.props
     const { groups, ownedIds, topicIds, privateTopicIds } = this.getRenderValues();
+    console.log('trxs: ', this.props.trxs)
 
     const tabs = [
       {
@@ -89,6 +91,7 @@ const mapState = state => {
   return {
     connectedAddress: state.accounts[0],
     Groups: state.contracts.Groups,
+    trxs: state.transactions,
     tags: Object.keys(state.tags.tags)
   }
 }

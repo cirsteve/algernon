@@ -16,9 +16,9 @@ function* getTags(action) {
         from = tagsCount;
         to = parseInt(count);
       }
-      console.log('getting tags: ', from, to)
+
       while ( from < to) {
-        console.log('getting tag')
+
         yield getTag(action.payload.getTag, from)
         from++
       }

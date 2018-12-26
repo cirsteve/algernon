@@ -25,23 +25,18 @@ class Topic extends Component {
   getRenderValues = () => ({
     topicResponse: this.props.Groups.getTopic[this.topicKey] ?
       Object.values(this.props.Groups.getTopic[this.topicKey].value) : null,
-    tagIdsResponse: this.props.Groups.getTopicTagIds[this.tagIdsKey] ?
-      Object.values(this.props.Groups.getTopicTagIds[this.tagIdsKey].value) : []
+    tagIds: this.props.Groups.getTopicTagIds[this.tagIdsKey] ?
+      Object.values(this.props.Groups.getTopicTagIds[this.tagIdsKey].value).map(id => parseInt(id)) : []
   })
 
   render () {
     const { tags } = this.props
-    const {topicResponse, tagIdsResponse} = this.getRenderValues()
+    const {topicResponse, tagIds} = this.getRenderValues()
     let topic = 'loading'
-    let topicTags = []
-
-    if (tagIdsResponse.length) {
-      topicTags = tagIdsResponse.map(id=> tags[parseInt(id)])
-    }
 
     if (topicResponse) {
       const hash = getMultihash(topicResponse)
-      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tags={topicTags}/>
+      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tagIds={tagIds} />
     }
 
     return (
@@ -58,8 +53,7 @@ Topic.contextTypes = {
 
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups,
-    tags: state.tags.tags
+    Groups: state.contracts.Groups
   }
 }
 
