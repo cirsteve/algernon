@@ -12,14 +12,14 @@ class User extends Component {
   constructor (props, context) {
     super(props)
     this.methods = context.drizzle.contracts.Groups.methods
-    this.address = props.match.params.address
+    const address = props.match.params.address
 
-    this.userGroupsKey = this.methods.getUserGroups.cacheCall(this.address)
-    this.userOwnedGroupsKey = this.methods.getUserOwnedGroupIds.cacheCall(this.address)
-    this.topicIdsKey = this.methods.getUserTopicIds.cacheCall(this.address)
+    this.userGroupsKey = this.methods.getUserGroups.cacheCall(address)
+    this.userOwnedGroupsKey = this.methods.getUserOwnedGroupIds.cacheCall(address)
+    this.topicIdsKey = this.methods.getUserTopicIds.cacheCall(address)
     this.tagCountKey = this.methods.getTagCount.cacheCall()
     this.privateTopicIdsKey = ''
-    if (props.connectedAddress === this.address) {
+    if (props.connectedAddress === address) {
       this.privateTopicIdsKey = this.methods.getUserPrivateTopicIds.cacheCall()
     }
   }
@@ -35,7 +35,7 @@ class User extends Component {
     const { Groups } = this.props
     return {
       groups: Groups.getUserGroups[this.userGroupsKey] ?
-        Groups.getUserGroups[this.userGroupsKey].value : null,
+        Groups.getUserGroups[this.userGroupsKey].value : [[]],
       ownedIds: Groups.getUserOwnedGroupIds[this.userOwnedGroupsKey] ?
         Groups.getUserOwnedGroupIds[this.userOwnedGroupsKey].value : null,
       topicIds: Groups.getUserTopicIds[this.topicIdsKey] ?
@@ -48,29 +48,30 @@ class User extends Component {
   }
 
   render () {
-    const { tags } = this.props
+    const { tags, connectedAddress } = this.props
     const { groups, ownedIds, topicIds, privateTopicIds } = this.getRenderValues();
-    console.log('trxs: ', this.props.trxs)
+    const address = this.props.match.params.address
+    const isOwner = connectedAddress == address
 
     const tabs = [
       {
         label: `Topics`,
-        content: <TopicSection key='topic' address={this.address} topicIds={topicIds} tags={tags} />
+        content: <TopicSection key='topic' address={address} isOwner={isOwner} topicIds={topicIds} tags={tags} />
       },
       {
         label: 'Enrolled Groups',
-        content: <GroupList key='groups' groups={groups} />
+        content: <GroupList key='groups' ids={groups[0]} isOwner={isOwner} />
       },
       {
         label: 'Owned Groups',
-        content: <GroupSection key='owned' groupIds={ownedIds} tags={tags} />
+        content: <GroupSection key='owned' groupIds={ownedIds} tags={tags} isOwner={isOwner} />
       }
     ]
 
     if (privateTopicIds) {
       const privateTopics = {
         label: `Private Topics`,
-        content: <TopicSection key='privateTopic' address={this.address} topicIds={privateTopicIds} tags={tags}  privateTopics={true} />
+        content: <TopicSection key='privateTopic' address={address} topicIds={privateTopicIds} tags={tags}  privateTopics={true} isOwner={isOwner} />
       }
       tabs.splice(1,0, privateTopics)
     }

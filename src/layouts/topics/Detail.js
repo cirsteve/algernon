@@ -1,7 +1,10 @@
 import React, { Component, Fragment } from 'react';
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import Html from '../common/Html'
 import Button from '../common/forms/Button'
 import RichText from '../common/forms/RichText'
@@ -21,6 +24,12 @@ const styles = theme => ({
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
   },
+  paper: {
+    ...theme.mixins.gutters(),
+    marginTop: '0.5em',
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2,
+  },
   gridList: {
     width: 500,
     height: 450,
@@ -28,6 +37,13 @@ const styles = theme => ({
   icon: {
     color: 'rgba(255, 255, 255, 0.54)',
   },
+  ownerLink: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  ownerA:{
+    color: 'gray',
+  }
 });
 
 class Detail extends Component {
@@ -98,9 +114,10 @@ class Detail extends Component {
   }
 
   render () {
-    const { hashedContent, hash, owner, connectedAddress, id, tagIds } = this.props
+    const { classes, hashedContent, hash, owner, connectedAddress, id, tagIds } = this.props
     const { notes } = this.state.offChainFields
     let topic = 'Loading Topic'
+    const isOwner = connectedAddress === owner
 
     if (hashedContent[hash]) {
       const topicFields = hashedContent[hash];
@@ -109,46 +126,56 @@ class Detail extends Component {
       const metaFields = schema.offChain
         .filter(f => metaFieldNames.includes(f.name))
         .map(f => ({...f, value: this.state.offChainFields[f.name] || topicFields[f.name], onChange: this.updateOffChainField.bind(this, f.name)}))
-      const metaData = this.state.editingMetaData ?
-        <div>
-          <IconSubmit onCancel={this.cancelEdit.bind(this)} doneEl={doneEl} />
-          <Fields fields={metaFields} />
-        </div>
-        :
-        <div>
-          <h1>
-            {topicFields.title}
-            { connectedAddress === owner ?
-              <EditIcon onClick={this.updateEditingMetaData.bind(this, true)} />
-              :
-              null
-            }
-          </h1>
-          <a href={topicFields.url} target="blank">{topicFields.url}</a>
-          <div>
-            {topicFields.description}
+      const metaData =
+        <Fragment>
+          <div style={{display: this.state.editingMetaData ? 'block' : 'none' }}>
+            <IconSubmit onCancel={this.cancelEdit.bind(this)} doneEl={doneEl} />
+            <Fields fields={metaFields} />
           </div>
-        </div>
+          <div style={{display: this.state.editingMetaData ? 'none' : 'block'}}>
+            <div className={classes.ownerLink}>
+              <Link className={classes.ownerA} to={`/users/${owner}`}>{owner}</Link>
+            </div>
+            <Typography variant="h3" component="h4">
+              {topicFields.title}
+              { isOwner ?
+                <EditIcon onClick={this.updateEditingMetaData.bind(this, true)} />
+                :
+                null
+              }
+            </Typography>
+            <Paper className={classes.paper} elevation={1}>
+            <a href={`//${topicFields.url}`} target="_blank">{topicFields.url}</a>
+            <div>
+              {topicFields.description}
+            </div>
+            </Paper>
+          </div>
+        </Fragment>
 
 
       const note =
         <div>
-          <h4>
+          <Typography variant="h4" component="h4">
             Notes
             { connectedAddress === owner ?
-              this.state.editingNote ?
-                <IconSubmit onCancel={this.cancelEdit.bind(this)} doneEl={doneEl} />
-                :
-                <EditIcon onClick={this.updateEditingNote.bind(this, true)} />
+                <Fragment>
+                  <div style={{display: this.state.editingNote ? 'inline' : 'none' }}>
+                    <IconSubmit onCancel={this.cancelEdit.bind(this)} doneEl={doneEl} />
+                  </div>
+                  <EditIcon style={{display: this.state.editingNote ? 'none' : 'inline' }} onClick={this.updateEditingNote.bind(this, true)} />
+                </Fragment>
               :
               null
             }
-          </h4>
+          </Typography>
+          <Paper className={classes.paper} elevation={1}>
           {this.state.editingNote ?
             <RichText value={this.state.offChainFields.notes || topicFields.notes} onChange={this.updateOffChainField.bind(this, 'notes')} />
             :
             <Html html={notes || topicFields.notes} />
           }
+        </Paper>
         </div>
 
       topic =

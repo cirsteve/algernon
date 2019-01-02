@@ -63,8 +63,9 @@ class Group extends Component {
     return (
       <div>
         <h3>Group</h3>
-        {enroll}
+
         {group}
+        {enroll}
         <h3>Members</h3>
         {members}
       </div>

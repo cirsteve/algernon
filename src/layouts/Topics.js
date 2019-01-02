@@ -33,7 +33,7 @@ class Topics extends Component {
 
     return (
       <div>
-        <h3>Topics</h3>
+        <h1>Topics</h1>
 
         {topics}
       </div>

@@ -41,7 +41,7 @@ class Create extends Component {
     return (
       <Fragment>
       {this.props.useIcon ?
-        <Fab onClick={this.submit} color="primary" aria-label="Edit" >
+        <Fab onClick={this.submit} color="secondary" aria-label="Edit" >
           <DoneIcon />
         </Fab>
         :
@@ -68,7 +68,7 @@ const mapState = state => {
   return {
     Groups: state.contracts.Groups,
     pendingUpload: state.data.pendingUpload,
-    uploadedHashes: state.data.hashedContent
+    uploadedHashes: state.data.uploadedHashes
   }
 }
 

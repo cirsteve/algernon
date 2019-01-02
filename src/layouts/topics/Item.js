@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
 import { getMultihash } from '../../util/multihash'
-import IpfsContent from '../common/IpfsContent'
+import Tile from './TopicTile'
+import Ipfs from '../common/Ipfs'
 
 class Item extends Component {
   constructor (props, context) {
@@ -18,13 +19,17 @@ class Item extends Component {
   }
 
   render () {
-    const { noLink, linkTo } = this.props
+    const { noLink, linkTo, id } = this.props
     const { topicResponse } = this.getRenderValues();
     let topic = 'Loading Topic'
 
     if (Array.isArray(topicResponse)) {
         const link = noLink ? null : linkTo
-        topic = <IpfsContent hash={getMultihash(topicResponse)} link={link} />
+        topic =
+          <Ipfs hash={getMultihash(topicResponse)} >
+            <Tile link={link} id={id} />
+          </Ipfs>
+
     }
 
     return (

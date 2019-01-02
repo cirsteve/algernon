@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {Route, Switch } from 'react-router-dom'
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import Home from './layouts/Home'
 import User from './layouts/User'
 import Group from './layouts/Group'
@@ -10,6 +11,7 @@ import Topics from './layouts/Topics'
 import Tags from './layouts/Tags'
 import TopBar from './layouts/common/TopBar'
 
+import theme from './theme.js'
 // Styles
 import './css/oswald.css'
 import './css/open-sans.css'
@@ -30,6 +32,7 @@ class App extends Component {
 
   render() {
     return (
+      <MuiThemeProvider theme={createMuiTheme(theme)}>
       <div className="App">
         <TopBar />
         <div style={contentStyle}>
@@ -47,6 +50,7 @@ class App extends Component {
           </div>
         </div>
       </div>
+      </MuiThemeProvider>
     );
   }
 }

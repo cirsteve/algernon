@@ -21,7 +21,7 @@ class Item extends React.Component {
   render () {
     const { classes, label } = this.props
     return (
-      <Chip label={label} className={classes.chip} />
+      <Chip label={label} className={classes.chip} color='primary'/>
     );
   }
 }

@@ -25,23 +25,18 @@ class Topic extends Component {
   getRenderValues = () => ({
     topicResponse: this.props.Groups.getPrivateTopic[this.topicKey] ?
       Object.values(this.props.Groups.getPrivateTopic[this.topicKey].value) : null,
-    tagIdsResponse: this.props.Groups.getPrivateTopicTagIds[this.tagIdsKey] ?
-      Object.values(this.props.Groups.getPrivateTopicTagIds[this.tagIdsKey].value) : []
+    tagIds: this.props.Groups.getPrivateTopicTagIds[this.tagIdsKey] ?
+      Object.values(this.props.Groups.getPrivateTopicTagIds[this.tagIdsKey].value).map(id => parseInt(id)) : []
   })
 
   render () {
     const { tags } = this.props
-    const {topicResponse, tagIdsResponse} = this.getRenderValues()
+    const {topicResponse, tagIds} = this.getRenderValues()
     let topic = 'loading'
-    let topicTags = []
-
-    if (tagIdsResponse.length) {
-      topicTags = tagIdsResponse.map(id=> tags[parseInt(id)])
-    }
 
     if (topicResponse) {
       const hash = getMultihash(topicResponse)
-      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tags={topicTags}/>
+      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tagIds={tagIds}/>
     }
 
     return (

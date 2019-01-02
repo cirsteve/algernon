@@ -134,7 +134,7 @@ const mapState = state => {
   return {
     Groups: state.contracts.Groups,
     pendingUpload: state.data.pendingUpload,
-    uploadedHashes: state.data.hashedContent
+    uploadedHashes: state.data.uploadedHashes
   }
 }
 

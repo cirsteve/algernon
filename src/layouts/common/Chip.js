@@ -14,7 +14,7 @@ const styles = theme => ({
 
 function Item({ classes, label }) {
   return (
-    <Chip label={label} className={classes.chip} />
+    <Chip label={label} className={classes.chip} color='#ef12ef'/>
 
   );
 }

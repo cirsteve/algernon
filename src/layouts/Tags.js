@@ -59,7 +59,7 @@ class Tags extends Component {
 
     return (
       <div className={classes.root}>
-        <h3>Tags</h3>
+        <h1>Tags</h1>
         <TagForm />
         <div className={classes.tagList}>
           {tags}

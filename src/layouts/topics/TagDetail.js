@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { drizzleConnect } from 'drizzle-react'
-
+import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Html from '../common/Html'
 import Button from '../common/forms/Button'
@@ -15,9 +15,9 @@ const styles = theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
     overflow: 'hidden',
-    backgroundColor: theme.palette.background.paper,
+    margin: '2em 0',
+
   },
   gridList: {
     width: 500,
@@ -53,7 +53,7 @@ class Detail extends Component {
   render () {
     const { classes, isOwner, tags, tagIds, topicId } = this.props
 
-    const header = isOwner ? <h3>Tags<EditIcon onClick={this.updateEditing.bind(this, true)} /></h3> : <h3>Tags</h3>
+    const header = isOwner ? <Typography variant="h4" component="h4">Tags<EditIcon onClick={this.updateEditing.bind(this, true)} /></Typography> : <h3>Tags</h3>
 
     const tagOptions = tags.map((t,i) => ({label: t, value: i}))
 
@@ -66,7 +66,7 @@ class Detail extends Component {
 
 
     return (
-      <div>
+      <div className={classes.root}>
         {header}
         {detail}
       </div>

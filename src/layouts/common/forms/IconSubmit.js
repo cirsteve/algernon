@@ -15,13 +15,13 @@ function FloatingActionButtons(props) {
   const { classes, onSubmit, onCancel, doneEl } = props;
   return (
     <div>
-      <Fab onClick={onCancel} color="secondary" aria-label="Edit" className={classes.fab}>
+      <Fab onClick={onCancel} color="error" aria-label="Edit" className={classes.fab}>
         <CancelIcon />
       </Fab>
       {doneEl ?
         doneEl
         :
-        <Fab onClick={onSubmit} color="primary" aria-label="Edit" className={classes.fab}>
+        <Fab onClick={onSubmit} color="secondary" aria-label="Edit" className={classes.fab}>
           <DoneIcon />
         </Fab>
       }
