@@ -33,7 +33,7 @@ class Groups extends Component {
 
     return (
       <div>
-        <h3>Groups</h3>
+        <h1>Groups</h1>
 
         {groups}
       </div>

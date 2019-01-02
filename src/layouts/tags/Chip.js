@@ -12,14 +12,20 @@ const styles = theme => ({
 });
 
 
-function Item({ classes, label }) {
-  return (
-    <Chip label={label} className={classes.chip} color='#ef12ef'/>
+class Item extends React.Component {
 
-  );
+  componentDidMount = () => {
+    console.log('chip mounted: ', this.props.label)
+    this.props.tagReceived(this.props.label)
+  }
+  render () {
+    const { classes, label } = this.props
+    return (
+      <Chip label={label} className={classes.chip} color='primary'/>
+    );
+  }
 }
 
-Item.componentDidMount = () => this.props.tagReceived(this.props.label)
 
 Item.propTypes = {
   classes: PropTypes.object.isRequired,

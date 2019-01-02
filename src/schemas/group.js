@@ -32,6 +32,13 @@ const offChain = [
     default: ''
   },
   {
+    name: 'url',
+    label: 'URL',
+    type: 'url',
+    require: false,
+    default: ''
+  },
+  {
     name: 'description',
     label: 'Description',
     type: 'string',

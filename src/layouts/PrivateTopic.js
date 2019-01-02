@@ -10,8 +10,8 @@ class Topic extends Component {
     super(props)
     this.methods = context.drizzle.contracts.Groups.methods
     this.id = props.match.params.id
-    this.topicKey = this.methods.getTopic.cacheCall(this.id)
-    this.tagIdsKey = this.methods.getTopicTagIds.cacheCall(this.id)
+    this.topicKey = this.methods.getPrivateTopic.cacheCall(this.id)
+    this.tagIdsKey = this.methods.getPrivateTopicTagIds.cacheCall(this.id)
 
 
   }
@@ -23,10 +23,10 @@ class Topic extends Component {
   }
 
   getRenderValues = () => ({
-    topicResponse: this.props.Groups.getTopic[this.topicKey] ?
-      Object.values(this.props.Groups.getTopic[this.topicKey].value) : null,
-    tagIds: this.props.Groups.getTopicTagIds[this.tagIdsKey] ?
-      Object.values(this.props.Groups.getTopicTagIds[this.tagIdsKey].value).map(id => parseInt(id)) : []
+    topicResponse: this.props.Groups.getPrivateTopic[this.topicKey] ?
+      Object.values(this.props.Groups.getPrivateTopic[this.topicKey].value) : null,
+    tagIds: this.props.Groups.getPrivateTopicTagIds[this.tagIdsKey] ?
+      Object.values(this.props.Groups.getPrivateTopicTagIds[this.tagIdsKey].value).map(id => parseInt(id)) : []
   })
 
   render () {
@@ -36,7 +36,7 @@ class Topic extends Component {
 
     if (topicResponse) {
       const hash = getMultihash(topicResponse)
-      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tagIds={tagIds} />
+      topic = <Detail hash={hash} owner={topicResponse[4]} id={topicResponse[3]} tagIds={tagIds}/>
     }
 
     return (
@@ -53,7 +53,8 @@ Topic.contextTypes = {
 
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups
+    Groups: state.contracts.Groups,
+    tags: state.tags.tags
   }
 }
 

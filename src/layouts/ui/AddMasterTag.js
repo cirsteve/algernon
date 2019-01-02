@@ -5,11 +5,15 @@ import Button from '@material-ui/core/Button';
 
 class Add extends Component {
 
-  submit = () => this.context.drizzle.contracts.Groups.methods.addMasterTag.cacheSend(this.props.tag)
+  submit = () => {
+    this.props.clearInput()
+    this.context.drizzle.contracts.Groups.methods.addMasterTag.cacheSend(this.props.tag)
+    this.props.tagSubmitted(this.props.tag)
+  }
 
   render () {
     return (
-      <Button onClick={this.submit} color="primary">
+      <Button onClick={this.submit} disabled={this.props.tag.length ? false : true} variant="contained" color="primary">
         Add Tag to List
       </Button>
     )
@@ -20,4 +24,11 @@ Add.contextTypes = {
   drizzle: PropTypes.object
 }
 
-export default drizzleConnect(Add);
+const mapDispatch = (dispatch) => {
+    return {
+        tagSubmitted: (tag) => dispatch({type: 'TAG_SUBMITTED', payload: {tag}})
+
+    };
+}
+
+export default drizzleConnect(Add, () => ({}), mapDispatch);

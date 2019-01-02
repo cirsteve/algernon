@@ -14,13 +14,18 @@ contract Groups is Topics{
       uint256 limit;
       uint256 balance;
       uint256[] tagIds;
-      MultiHash data;
+      MultiHash content;
       address owner;
       address[] members;
     }
 
+    struct UserGroup {
+      uint256 groupId;
+      uint256 topicId;
+    }
+
     Group[] groups;
-    mapping (address => uint256[]) userGroups;
+    mapping (address => UserGroup[]) userGroups;
     mapping (address => uint256[]) userOwnedGroups;
     mapping (address => uint256) userBalances;
 
@@ -55,7 +60,10 @@ contract Groups is Topics{
       Group storage group = groups[_id];
       require(msg.value == group.fee, 'Enrollment Fee required');
       require(group.members.length < group.limit);
-      userGroups[msg.sender].push(_id);
+      //MultiHash memory multihash = createMultiHash(_hash, _hashFunction, _size);
+      uint256 topicId = createUserTopic(group.tagIds, group.content, msg.sender);
+      UserGroup memory userGroup = UserGroup(group.id, topicId);
+      userGroups[msg.sender].push(userGroup);
       group.balance += msg.value;
       group.members.push(msg.sender);
 
@@ -75,7 +83,7 @@ contract Groups is Topics{
     function updateGroupData (uint256 _id, bytes32 _hash, uint8 _hashFunction, uint8 _size) public onlyGroupOwner(_id){
       Group storage group = groups[_id];
       MultiHash memory multihash = MultiHash(_hash, _hashFunction, _size);
-      group.data = multihash;
+      group.content = multihash;
     }
 
     function addGroupTags(uint256[] memory _ids, uint256 _groupId) public onlyGroupOwner(_groupId) {
@@ -117,7 +125,7 @@ contract Groups is Topics{
 
     function getGroup(uint256 _id) public view returns (uint256, uint256, uint256, uint256, address, bytes32, uint8, uint8) {
       Group storage group = groups[_id];
-      return (group.id, group.fee, group.limit, group.balance, group.owner, group.data.hash, group.data.hashFunction, group.data.size);
+      return (group.id, group.fee, group.limit, group.balance, group.owner, group.content.hash, group.content.hashFunction, group.content.size);
     }
 
     function getGroupMembers (uint256 _id) public view returns (address[] memory) {
@@ -128,8 +136,15 @@ contract Groups is Topics{
       return userOwnedGroups[_user];
     }
 
-    function getUserGroupIds (address _user) public view returns (uint256[] memory) {
-      return userGroups[_user];
+    function getUserGroups (address _user) public view returns (uint256[] memory groupIds, uint256[] memory topicIds) {
+      groupIds = new uint256[](userGroups[_user].length);
+      topicIds = new uint256[](userGroups[_user].length);
+      for (uint i = 0;i < userGroups[_user].length;i++) {
+        UserGroup storage userGroup = userGroups[_user][i];
+        groupIds[i] = userGroup.groupId;
+        topicIds[i] = userGroup.topicId;
+      }
+      return (groupIds, topicIds);
     }
 
  }

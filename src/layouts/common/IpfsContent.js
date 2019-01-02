@@ -3,7 +3,6 @@ import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles';
-import GridListTile from '@material-ui/core/GridListTile';
 import Html from './Html'
 
 const styles = theme => ({
@@ -30,23 +29,38 @@ class Tile extends Component {
     }
   }
   render () {
-    const {link, hashedContent, hash } = this.props
+    const {link, hashedContent, hash, fieldsToRender, noLabels } = this.props
     let ipfsContent = 'Loading info IPFS'
 
     if (hashedContent[hash]) {
       const values = hashedContent[hash];
-      ipfsContent = Object.keys(values).map((k, idx)=> (
+      let keys = Object.keys(values)
+      keys = fieldsToRender ? keys.filter(k => fieldsToRender.includes(k)) : keys
+      console.log(values, keys)
+      ipfsContent = keys.map((k, idx)=> (
         <div key={k}>
-          {k}: {k === 'notes' || k === 'content' ? <Html html={values[k]} /> : link && idx === 0 ? <Link to={link}>{values[k]}</Link> : values[k]}
+          
+          {
+            k === 'notes' || k === 'content' ?
+              <Html html={values[k]} />
+              :
+              link && idx === 0 ?
+                <h3><Link to={link}>{values[k]}</Link></h3>
+                :
+                k === 'url' ?
+                  <a href={values[k]} target="blank">{values[k]}</a>
+                  :
+                  values[k]
+          }
         </div>
       ))
     }
 
     return (
-        <GridListTile>
-          {ipfsContent}
-        </GridListTile>
-    );
+      <div>
+        {ipfsContent}
+      </div>
+    )
   }
 }
 

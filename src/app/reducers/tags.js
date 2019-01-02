@@ -1,13 +1,21 @@
 import produce from 'immer'
 const initialState = {
-    tags: []
+    tags: {},
+    submittedTags: {},
+    count: 0
 };
 
 export default (state = initialState, action) => {
   return produce(state, draftState => {
     switch (action.type) {
         case 'TAG_RECEIVED':
-          draftState.tags[action.payload.id] = action.payload.tag;
+          draftState.tags[action.payload.tag] = true;
+          break
+        case 'TAG_SUBMITTED':
+          draftState.submittedTags[action.payload.tag] = true;
+          break
+        case 'TAG_COUNT':
+          draftState.count = action.payload.count;
           break
         default:
           return state;

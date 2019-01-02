@@ -18,17 +18,17 @@ const offChain = [
     default: ''
   },
   {
-    name: 'description',
-    label: 'Description',
-    type: 'string',
-    multiline: true,
+    name: 'url',
+    label: 'URL',
+    type: 'url',
     require: false,
     default: ''
   },
   {
-    name: 'url',
-    label: 'URL',
-    type: 'url',
+    name: 'description',
+    label: 'Description',
+    type: 'string',
+    multiline: true,
     require: false,
     default: ''
   },
