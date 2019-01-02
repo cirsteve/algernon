@@ -1,13 +1,20 @@
 import React, { Component, Fragment } from 'react';
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom'
 import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import Html from '../common/Html'
 import Button from '../common/forms/Button'
 import RichText from '../common/forms/RichText'
+import Fields from '../common/Fields'
 import schema from '../../schemas/topic'
 import UpdateTopic from '../ui/UpdateTopic'
 import Chip from '../common/Chip'
+import IconSubmit from '../common/forms/IconSubmit'
+import TagDetail from './TagDetail'
+import EditIcon from '@material-ui/icons/Edit'
 
 const styles = theme => ({
   root: {
@@ -17,6 +24,12 @@ const styles = theme => ({
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
   },
+  paper: {
+    ...theme.mixins.gutters(),
+    marginTop: '0.5em',
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2,
+  },
   gridList: {
     width: 500,
     height: 450,
@@ -24,6 +37,13 @@ const styles = theme => ({
   icon: {
     color: 'rgba(255, 255, 255, 0.54)',
   },
+  ownerLink: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+  },
+  ownerA:{
+    color: 'gray',
+  }
 });
 
 class Detail extends Component {
@@ -31,6 +51,7 @@ class Detail extends Component {
     super(props)
     this.state = {
       editingNote: false,
+      editingMetaData: false,
       offChainFields: schema.offChain.reduce((acc, f) => {
         acc[f.name] = null;
         return acc;
@@ -52,9 +73,28 @@ class Detail extends Component {
     }
   }
 
+  updateEditingMetaData = (editingMetaData) => this.setState({...this.state, editingMetaData})
+
   updateEditingNote = (editingNote) => this.setState({...this.state, editingNote})
 
-  cancelEditNote = () =>  this.setState({...this.state, editingNote: false, offChainFields: {...this.state.offChainFields, notes: null}})
+  cancelEdit = () =>  this.setState(
+    {
+      ...this.state,
+      editingNote: false,
+      editingMetaData: false,
+      offChainFields: {
+        ...this.state.offChainFields,
+        notes: null,
+        title: null,
+        url: null,
+        description: null
+      }
+    }
+  )
+
+  onNoteSubmit = () => {
+    this.cancelEdit()
+  }
 
   updateOffChainField = (field, e, val) => {
     this.setState({
@@ -74,38 +114,75 @@ class Detail extends Component {
   }
 
   render () {
-    const { hashedContent, hash, owner, connectedAddress, id, tags } = this.props
+    const { classes, hashedContent, hash, owner, connectedAddress, id, tagIds } = this.props
     const { notes } = this.state.offChainFields
     let topic = 'Loading Topic'
-    console.log('render detail: ', hashedContent, hash)
+    const isOwner = connectedAddress === owner
 
     if (hashedContent[hash]) {
       const topicFields = hashedContent[hash];
-          console.log('render detail: ', this.getOffChainFields(topicFields), this.state.offChainFields)
+      const doneEl = <UpdateTopic id={id} offChainFields={this.getOffChainFields(topicFields)} onSubmit={this.onNoteSubmit} />
+      const metaFieldNames = ['title', 'url', 'description']
+      const metaFields = schema.offChain
+        .filter(f => metaFieldNames.includes(f.name))
+        .map(f => ({...f, value: this.state.offChainFields[f.name] || topicFields[f.name], onChange: this.updateOffChainField.bind(this, f.name)}))
+      const metaData =
+        <Fragment>
+          <div style={{display: this.state.editingMetaData ? 'block' : 'none' }}>
+            <IconSubmit onCancel={this.cancelEdit.bind(this)} doneEl={doneEl} />
+            <Fields fields={metaFields} />
+          </div>
+          <div style={{display: this.state.editingMetaData ? 'none' : 'block'}}>
+            <div className={classes.ownerLink}>
+              <Link className={classes.ownerA} to={`/users/${owner}`}>{owner}</Link>
+            </div>
+            <Typography variant="h3" component="h4">
+              {topicFields.title}
+              { isOwner ?
+                <EditIcon onClick={this.updateEditingMetaData.bind(this, true)} />
+                :
+                null
+              }
+            </Typography>
+            <Paper className={classes.paper} elevation={1}>
+            <a href={`//${topicFields.url}`} target="_blank">{topicFields.url}</a>
+            <div>
+              {topicFields.description}
+            </div>
+            </Paper>
+          </div>
+        </Fragment>
 
-      const note = this.state.editingNote ?
+
+      const note =
         <div>
-          <Button text="Cancel Edit" onClick={this.cancelEditNote.bind(this)} />
-          <UpdateTopic id={parseInt(id)} offChainFields={this.getOffChainFields(topicFields)} />
-          <RichText value={notes || topicFields.notes} onChange={this.updateOffChainField.bind(this, 'notes')} />
-        </div>
-        :
-        <div>
-          { connectedAddress === owner ? <Button text="Edit" onClick={this.updateEditingNote.bind(this, true)} /> : null}
-          <Html html={notes || topicFields.notes} />
+          <Typography variant="h4" component="h4">
+            Notes
+            { connectedAddress === owner ?
+                <Fragment>
+                  <div style={{display: this.state.editingNote ? 'inline' : 'none' }}>
+                    <IconSubmit onCancel={this.cancelEdit.bind(this)} doneEl={doneEl} />
+                  </div>
+                  <EditIcon style={{display: this.state.editingNote ? 'none' : 'inline' }} onClick={this.updateEditingNote.bind(this, true)} />
+                </Fragment>
+              :
+              null
+            }
+          </Typography>
+          <Paper className={classes.paper} elevation={1}>
+          {this.state.editingNote ?
+            <RichText value={this.state.offChainFields.notes || topicFields.notes} onChange={this.updateOffChainField.bind(this, 'notes')} />
+            :
+            <Html html={notes || topicFields.notes} />
+          }
+        </Paper>
         </div>
 
       topic =
         <Fragment>
-          <h1>
-            {topicFields.title}
-          </h1>
-          <a href={topicFields.url} target="blank">{topicFields.url}</a>
+          {metaData}
           <div>
-            {topicFields.description}
-          </div>
-          <div>
-            Tags: {tags.map(tag => <Chip label={tag} />)}
+            <TagDetail isOwner={connectedAddress === owner} tagIds={tagIds} topicId={parseInt(id)} />
           </div>
           <div>
             {note}

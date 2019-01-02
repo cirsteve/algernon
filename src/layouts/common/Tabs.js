@@ -10,6 +10,9 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: 'transparent',
+  },
+  appBar: {
+    marginBottom: '1em'
   }
 });
 
@@ -29,7 +32,7 @@ class SimpleTabs extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static">
+        <AppBar position="static" className={classes.appBar}>
           <Tabs value={this.state.index} onChange={this.updateIndex}>
             {tabs.filter(t => t.label).map(t => <Tab key={t.label} label={t.label} />)}
           </Tabs>

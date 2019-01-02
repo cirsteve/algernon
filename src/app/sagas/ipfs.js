@@ -7,7 +7,7 @@ function* ipfsUpload(action) {
    try {
       const hash = yield call(ipfs.add, Buffer.from(action.payload.upload, 'utf-8'));
 
-      yield put({type: "IPFS_UPLOAD_SUCCEEDED", payload:{hash: hash[0].path}});
+      yield put({type: "IPFS_UPLOAD_SUCCEEDED", payload:{hash: hash[0].path, hashId: action.payload.actionId}});
    } catch (e) {
      console.log('ipfs failure', e.message);
       yield put({type: "IPFS_UPLOAD_FAILED", message: e.message});
@@ -17,9 +17,10 @@ function* ipfsUpload(action) {
 function* ipfsUploadThenSave(action) {
   console.log('ipfs uploading', action);
    try {
-      const hash = yield call(ipfs.add, Buffer.from(action.payload.upload, 'utf-8'));
+      const hash = yield call(ipfs.add, Buffer.from(action.payload.upload, 'utf-8'), {pin:true});
       const { digest, hashFunction, size } = getBytes32FromMultihash(hash[0].path)
       console.log('got the hash: ', action.payload.save, digest, hashFunction, size )
+      yield put({type: "IPFS_UPLOAD_SUCCEEDED", payload:{hash: hash[0].path, hashId: action.payload.hashId}});
       action.payload.save(digest, hashFunction, size)
 
    } catch (e) {

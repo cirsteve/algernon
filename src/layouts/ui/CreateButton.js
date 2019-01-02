@@ -3,7 +3,8 @@ import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button';
 import Dialog from '../common/Dialog'
-
+import Fab from '@material-ui/core/Fab';
+import DoneIcon from '@material-ui/icons/Done';
 
 class Create extends Component {
   constructor (props, context) {
@@ -25,6 +26,7 @@ class Create extends Component {
     this.props.contractFields.forEach(field => submit = submit.bind(this, field))
     this.props.submit(JSON.stringify(this.props.offChainFields), submit, hashId)
     this.setState({...this.state, hashId, openInfo: true})
+    this.props.onSubmit && this.props.onSubmit()
   }
 
   render () {
@@ -38,9 +40,15 @@ class Create extends Component {
 
     return (
       <Fragment>
+      {this.props.useIcon ?
+        <Fab onClick={this.submit} color="secondary" aria-label="Edit" >
+          <DoneIcon />
+        </Fab>
+        :
         <Button onClick={this.submit} color="primary">
           {this.props.buttonText}
         </Button>
+      }
         <Dialog
           dialogTitle=''
           open={this.state.openInfo}
@@ -60,7 +68,7 @@ const mapState = state => {
   return {
     Groups: state.contracts.Groups,
     pendingUpload: state.data.pendingUpload,
-    uploadedHashes: state.data.hashedContent
+    uploadedHashes: state.data.uploadedHashes
   }
 }
 
