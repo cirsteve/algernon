@@ -6,12 +6,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Html from '../common/Html'
-import Button from '../common/forms/Button'
 import RichText from '../common/forms/RichText'
 import Fields from '../common/Fields'
 import schema from '../../schemas/topic'
 import UpdateTopic from '../ui/UpdateTopic'
-import Chip from '../common/Chip'
 import IconSubmit from '../common/forms/IconSubmit'
 import TagDetail from './TagDetail'
 import EditIcon from '@material-ui/icons/Edit'
@@ -145,7 +143,7 @@ class Detail extends Component {
               }
             </Typography>
             <Paper className={classes.paper} elevation={1}>
-            <a href={`//${topicFields.url}`} target="_blank">{topicFields.url}</a>
+            <a href={`//${topicFields.url}`} target="_blank" rel="noopener noreferrer">{topicFields.url}</a>
             <div>
               {topicFields.description}
             </div>

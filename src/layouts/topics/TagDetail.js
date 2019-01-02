@@ -1,11 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { drizzleConnect } from 'drizzle-react'
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import Html from '../common/Html'
-import Button from '../common/forms/Button'
-import RichText from '../common/forms/RichText'
-import schema from '../../schemas/topic'
 import TopicTagsForm from '../tags/TopicTagsForm'
 import TagItem from '../tags/LabelItem'
 

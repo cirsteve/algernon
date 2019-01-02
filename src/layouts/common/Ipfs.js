@@ -1,8 +1,8 @@
-import React, { Component, cloneElement } from 'react';
+import React from 'react';
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types';
 
-class Ipfs extends Component {
+class Ipfs extends React.Component {
   componentDidMount () {
     if (!this.props.hashedContent[this.props.hash]) {
       this.props.getIPFSHash(this.props.hash);
@@ -15,7 +15,7 @@ class Ipfs extends Component {
 
 
     if (hashedContent[hash]) {
-      content = cloneElement(children, {...hashedContent[hash]})
+      content = React.cloneElement(children, {...hashedContent[hash]})
     }
 
     return content;

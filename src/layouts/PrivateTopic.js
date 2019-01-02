@@ -30,7 +30,6 @@ class Topic extends Component {
   })
 
   render () {
-    const { tags } = this.props
     const {topicResponse, tagIds} = this.getRenderValues()
     let topic = 'loading'
 

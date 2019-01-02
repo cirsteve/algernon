@@ -29,7 +29,7 @@ class Tile extends Component {
     }
   }
   render () {
-    const {link, hashedContent, hash, fieldsToRender, noLabels } = this.props
+    const {link, hashedContent, hash, fieldsToRender } = this.props
     let ipfsContent = 'Loading info IPFS'
 
     if (hashedContent[hash]) {
@@ -39,7 +39,7 @@ class Tile extends Component {
       console.log(values, keys)
       ipfsContent = keys.map((k, idx)=> (
         <div key={k}>
-          
+
           {
             k === 'notes' || k === 'content' ?
               <Html html={values[k]} />

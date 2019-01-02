@@ -2,7 +2,6 @@ import React from 'react'
 import List from './List'
 import CreateTopic from '../ui/CreateTopic'
 import CreatePrivateTopic from '../ui/CreatePrivateTopic'
-import DownloadTopics from '../ui/DownloadTopicsButton'
 
 
 export default ({topicIds, tags, privateTopics, isOwner}) =>

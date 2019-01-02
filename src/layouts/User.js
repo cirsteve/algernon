@@ -51,7 +51,7 @@ class User extends Component {
     const { tags, connectedAddress } = this.props
     const { groups, ownedIds, topicIds, privateTopicIds } = this.getRenderValues();
     const address = this.props.match.params.address
-    const isOwner = connectedAddress == address
+    const isOwner = connectedAddress === address
 
     const tabs = [
       {

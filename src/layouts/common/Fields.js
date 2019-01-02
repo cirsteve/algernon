@@ -4,8 +4,6 @@ import React from 'react'
 import Text from '../common/forms/Text'
 import Select from '../common/forms/Select'
 import RichText from '../common/forms/RichText'
-import DialogForm from '../common/DialogForm'
-import Dialog from '../common/Dialog'
 
 const INPUT_MAP = {
   string: props => <Text {...props} />,
@@ -15,4 +13,4 @@ const INPUT_MAP = {
   select: props => <Select {...props} />
 }
 
-export default ({fields}) => fields.map(f => INPUT_MAP[f.type]({...f})) 
+export default ({fields}) => fields.map(f => INPUT_MAP[f.type]({...f}))
