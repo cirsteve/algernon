@@ -1,11 +1,11 @@
 import React from 'react'
 import Blockies from 'react-blockies';
 
-export default ({address}) => (
+export default ({address, size, scale}) => (
   <Blockies
     seed={address}
-    size={10}
-    scale={3}
+    size={size || 9}
+    scale={scale || 4}
     color="#2fe"
     bgColor="#1fe"
     spotColor="#4bc"

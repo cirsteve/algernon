@@ -2,11 +2,12 @@ pragma solidity ^0.5.0;
 
 
 import './Topics.sol';
-
+import './ERC20.sol';
 
 /** @title Group. */
-contract Groups is Topics{
+contract Groups is Topics {
     address payable owner;
+    address token_0x_address = 0xfC694174606c9f4E93090B74915c114Af86Db968;
 
     struct Group {
       uint256 id;
@@ -145,6 +146,10 @@ contract Groups is Topics{
         topicIds[i] = userGroup.topicId;
       }
       return (groupIds, topicIds);
+    }
+
+    function getContractTokenBalance() public view returns (uint256) {
+      return IERC20(token_0x_address).balanceOf(address(this));
     }
 
  }

@@ -7,7 +7,7 @@ import Tabs from './common/Tabs'
 import GroupList from './groups/List'
 import GroupSection from './groups/Section'
 import TopicSection from './topics/Section'
-
+import Blockie from './common/Blockie';
 class User extends Component {
   constructor (props, context) {
     super(props)
@@ -78,6 +78,10 @@ class User extends Component {
 
     return (
       <div>
+        <div style={{display: 'flex', marginBottom: '0.5em'}}>
+          <Blockie address={address} size={15} scale={7} />
+          <h3>{address}</h3>
+        </div>
         <Tabs tabs={tabs} />
       </div>
     )

@@ -1,4 +1,5 @@
 import Groups from './../build/contracts/Groups.json'
+import AlgerToken from './../build/contracts/AlgerToken.json'
 
 const drizzleOptions = {
   web3: {
@@ -10,6 +11,7 @@ const drizzleOptions = {
   },
   contracts: [
     Groups,
+    AlgerToken
 
   ],
   events: {

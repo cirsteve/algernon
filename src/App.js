@@ -9,6 +9,7 @@ import Topic from './layouts/Topic'
 import PrivateTopic from './layouts/PrivateTopic'
 import Topics from './layouts/Topics'
 import Tags from './layouts/Tags'
+import Token from './layouts/Token'
 import TopBar from './layouts/common/TopBar'
 
 import theme from './theme.js'
@@ -46,6 +47,7 @@ class App extends Component {
               <Route exact path="/groups" component={Groups} />
               <Route exact path="/groups/:id" component={Group} />
               <Route exact path="/tags" component={Tags} />
+              <Route exact path="/token" component={Token} />
             </Switch>
           </div>
         </div>
