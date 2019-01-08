@@ -10,7 +10,7 @@ import Enroll from './ui/Enroll'
 class Group extends Component {
   constructor (props, context) {
     super(props)
-    this.methods = context.drizzle.contracts.Groups.methods
+    this.methods = context.drizzle.contracts.Algernon.methods
     this.id = props.match.params.id
 
     this.groupKey = this.methods.getGroup.cacheCall(this.id)
@@ -19,10 +19,10 @@ class Group extends Component {
 
   getRenderValues = () => {
     return {
-      groupResponse: this.props.Groups.getGroup[this.groupKey] ?
-        Object.values(this.props.Groups.getGroup[this.groupKey].value) : null,
-      membersResponse: this.props.Groups.getGroupMembers[this.membersKey] ?
-        this.props.Groups.getGroupMembers[this.membersKey].value : null
+      groupResponse: this.props.Algernon.getGroup[this.groupKey] ?
+        Object.values(this.props.Algernon.getGroup[this.groupKey].value) : null,
+      membersResponse: this.props.Algernon.getGroupMembers[this.membersKey] ?
+        this.props.Algernon.getGroupMembers[this.membersKey].value : null
       }
   }
 
@@ -81,7 +81,7 @@ Group.contextTypes = {
 const mapState = state => {
   return {
     address: state.accounts[0],
-    Groups: state.contracts.Groups,
+    Algernon: state.contracts.Algernon,
   }
 }
 

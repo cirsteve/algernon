@@ -4,18 +4,18 @@ import PropTypes from 'prop-types'
 import {range} from 'lodash'
 import GroupItem from './groups/Item'
 
-class Groups extends Component {
+class Algernon extends Component {
   constructor (props, context) {
     super(props)
-    this.methods = context.drizzle.contracts.Groups.methods
+    this.methods = context.drizzle.contracts.Algernon.methods
     this.groupCountKey = this.methods.getGroupCount.cacheCall()
   }
 
   updateTag = (e) => this.setState({...this.state, tag: e.target.value})
 
   getRenderValues = () => ({
-    groupCountResponse: this.props.Groups.getGroupCount[this.groupCountKey] ?
-      Object.values(this.props.Groups.getGroupCount[this.groupCountKey].value) : null
+    groupCountResponse: this.props.Algernon.getGroupCount[this.groupCountKey] ?
+      Object.values(this.props.Algernon.getGroupCount[this.groupCountKey].value) : null
   })
 
   render () {
@@ -33,7 +33,7 @@ class Groups extends Component {
 
     return (
       <div>
-        <h1>Groups</h1>
+        <h1>Algernon</h1>
 
         {groups}
       </div>
@@ -41,14 +41,14 @@ class Groups extends Component {
   }
 }
 
-Groups.contextTypes = {
+Algernon.contextTypes = {
   drizzle: PropTypes.object
 }
 
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups
+    Algernon: state.contracts.Algernon
   }
 }
 
-export default drizzleConnect(Groups, mapState)
+export default drizzleConnect(Algernon, mapState)

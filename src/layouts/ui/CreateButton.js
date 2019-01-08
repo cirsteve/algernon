@@ -20,7 +20,7 @@ class Create extends Component {
 
   submit = () => {
     const hashId = Math.ceil(Math.random() * 1000000000000);
-    let submit = this.context.drizzle.contracts.Groups
+    let submit = this.context.drizzle.contracts.Algernon
       .methods[this.props.contractSubmit].cacheSend;
     if (this.props.submitArgs) this.props.submitArgs.forEach(arg => submit = submit.bind(this, arg))
     this.props.contractFields.forEach(field => submit = submit.bind(this, field))
@@ -66,7 +66,7 @@ Create.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups,
+    Algernon: state.contracts.Algernon,
     pendingUpload: state.data.pendingUpload,
     uploadedHashes: state.data.uploadedHashes
   }

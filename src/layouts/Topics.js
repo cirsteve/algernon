@@ -7,15 +7,15 @@ import TopicItem from './topics/Item'
 class Topics extends Component {
   constructor (props, context) {
     super(props)
-    this.methods = context.drizzle.contracts.Groups.methods
+    this.methods = context.drizzle.contracts.Algernon.methods
     this.topicCountKey = this.methods.getTopicCount.cacheCall()
   }
 
   updateTag = (e) => this.setState({...this.state, tag: e.target.value})
 
   getRenderValues = () => ({
-    topicCountResponse: this.props.Groups.getTopicCount[this.topicCountKey] ?
-      Object.values(this.props.Groups.getTopicCount[this.topicCountKey].value) : null
+    topicCountResponse: this.props.Algernon.getTopicCount[this.topicCountKey] ?
+      Object.values(this.props.Algernon.getTopicCount[this.topicCountKey].value) : null
   })
 
   render () {
@@ -47,7 +47,7 @@ Topics.contextTypes = {
 
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups
+    Algernon: state.contracts.Algernon
   }
 }
 

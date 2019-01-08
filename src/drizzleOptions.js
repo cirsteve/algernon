@@ -1,4 +1,4 @@
-import Groups from './../build/contracts/Groups.json'
+import Algernon from './../build/contracts/Algernon.json'
 import AlgerToken from './../build/contracts/AlgerToken.json'
 
 const drizzleOptions = {
@@ -10,12 +10,12 @@ const drizzleOptions = {
     }
   },
   contracts: [
-    Groups,
+    Algernon,
     AlgerToken
 
   ],
   events: {
-    Groups: ['GroupCreated']
+    Algernon: ['GroupCreated']
   },
   polls: {
     accounts: 1500

@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 
 class Enroll extends Component {
 
-  submit = () => this.context.drizzle.contracts.Groups.methods.enroll.cacheSend(this.props.id, {value: this.props.value})
+  submit = () => this.context.drizzle.contracts.Algernon.methods.enroll.cacheSend(this.props.id, {value: this.props.value})
 
   render () {
     return (

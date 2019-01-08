@@ -18,7 +18,7 @@ class Form extends Component {
     const updatedIds = [...this.state.tagIds]
     this.props.onSubmit(updatedIds)
     console.log('tsag form submit: ', this.props, updatedIds)
-    let trx = this.context.drizzle.contracts.Groups.methods.updateTopicTags.cacheSend(updatedIds, this.props.topicId)
+    let trx = this.context.drizzle.contracts.Algernon.methods.updateTopicTags.cacheSend(updatedIds, this.props.topicId)
     console.log('just cache sent: ', trx)
     this.setState({...this.state, tagIds:null})
   }

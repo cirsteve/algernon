@@ -57,7 +57,7 @@ class Bar extends React.Component {
                 Topics
               </Link>
               <Link to={`/groups`} className={classes.link}>
-                Groups
+                Algernon
               </Link>
               <Link to={`/tags`} className={classes.link}>
                 Tags

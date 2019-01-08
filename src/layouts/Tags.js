@@ -25,7 +25,7 @@ const styles = theme => ({
 class Tags extends Component {
   constructor (props, context) {
     super(props)
-    this.methods = context.drizzle.contracts.Groups.methods
+    this.methods = context.drizzle.contracts.Algernon.methods
     this.tagCountKey = this.methods.getTagCount.cacheCall()
 
 
@@ -38,8 +38,8 @@ class Tags extends Component {
   }
 
   getRenderValues = () => ({
-    tagCount: this.props.Groups.getTagCount[this.tagCountKey] ?
-      parseInt(this.props.Groups.getTagCount[this.tagCountKey].value) : null
+    tagCount: this.props.Algernon.getTagCount[this.tagCountKey] ?
+      parseInt(this.props.Algernon.getTagCount[this.tagCountKey].value) : null
   })
 
   render () {
@@ -75,7 +75,7 @@ Tags.contextTypes = {
 
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups,
+    Algernon: state.contracts.Algernon,
     fetchedTags: Object.keys(state.tags.tags),
     submittedTags: Object.keys(state.tags.submittedTags)
   }

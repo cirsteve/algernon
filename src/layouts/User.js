@@ -11,11 +11,11 @@ import Blockie from './common/Blockie';
 class User extends Component {
   constructor (props, context) {
     super(props)
-    this.methods = context.drizzle.contracts.Groups.methods
+    this.methods = context.drizzle.contracts.Algernon.methods
     const address = props.match.params.address
 
-    this.userGroupsKey = this.methods.getUserGroups.cacheCall(address)
-    this.userOwnedGroupsKey = this.methods.getUserOwnedGroupIds.cacheCall(address)
+    this.userAlgernonKey = this.methods.getUserAlgernon.cacheCall(address)
+    this.userOwnedAlgernonKey = this.methods.getUserOwnedGroupIds.cacheCall(address)
     this.topicIdsKey = this.methods.getUserTopicIds.cacheCall(address)
     this.tagCountKey = this.methods.getTagCount.cacheCall()
     this.privateTopicIdsKey = ''
@@ -32,18 +32,18 @@ class User extends Component {
   }
 
   getRenderValues = () => {
-    const { Groups } = this.props
+    const { Algernon } = this.props
     return {
-      groups: Groups.getUserGroups[this.userGroupsKey] ?
-        Groups.getUserGroups[this.userGroupsKey].value : [[]],
-      ownedIds: Groups.getUserOwnedGroupIds[this.userOwnedGroupsKey] ?
-        Groups.getUserOwnedGroupIds[this.userOwnedGroupsKey].value : null,
-      topicIds: Groups.getUserTopicIds[this.topicIdsKey] ?
-        Groups.getUserTopicIds[this.topicIdsKey].value : null,
-      privateTopicIds: Groups.getUserPrivateTopicIds[this.privateTopicIdsKey] ?
-        Groups.getUserPrivateTopicIds[this.privateTopicIdsKey].value : null,
-      tagCount: Groups.getTagCount[this.tagCountKey] ?
-        parseInt(Groups.getTagCount[this.tagCountKey].value) : null
+      groups: Algernon.getUserAlgernon[this.userAlgernonKey] ?
+        Algernon.getUserAlgernon[this.userAlgernonKey].value : [[]],
+      ownedIds: Algernon.getUserOwnedGroupIds[this.userOwnedAlgernonKey] ?
+        Algernon.getUserOwnedGroupIds[this.userOwnedAlgernonKey].value : null,
+      topicIds: Algernon.getUserTopicIds[this.topicIdsKey] ?
+        Algernon.getUserTopicIds[this.topicIdsKey].value : null,
+      privateTopicIds: Algernon.getUserPrivateTopicIds[this.privateTopicIdsKey] ?
+        Algernon.getUserPrivateTopicIds[this.privateTopicIdsKey].value : null,
+      tagCount: Algernon.getTagCount[this.tagCountKey] ?
+        parseInt(Algernon.getTagCount[this.tagCountKey].value) : null
     }
   }
 
@@ -59,11 +59,11 @@ class User extends Component {
         content: <TopicSection key='topic' address={address} isOwner={isOwner} topicIds={topicIds} tags={tags} />
       },
       {
-        label: 'Enrolled Groups',
+        label: 'Enrolled Algernon',
         content: <GroupList key='groups' ids={groups[0]} isOwner={isOwner} />
       },
       {
-        label: 'Owned Groups',
+        label: 'Owned Algernon',
         content: <GroupSection key='owned' groupIds={ownedIds} tags={tags} isOwner={isOwner} />
       }
     ]
@@ -95,7 +95,7 @@ User.contextTypes = {
 const mapState = state => {
   return {
     connectedAddress: state.accounts[0],
-    Groups: state.contracts.Groups,
+    Algernon: state.contracts.Algernon,
     trxs: state.transactions,
     tags: Object.keys(state.tags.tags)
   }

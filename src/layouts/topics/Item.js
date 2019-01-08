@@ -8,13 +8,13 @@ import Ipfs from '../common/Ipfs'
 class Item extends Component {
   constructor (props, context) {
     super(props)
-    this.topicKey = context.drizzle.contracts.Groups.methods[props.method].cacheCall(props.id)
+    this.topicKey = context.drizzle.contracts.Algernon.methods[props.method].cacheCall(props.id)
   }
 
   getRenderValues = () => {
     return {
-      topicResponse: this.props.Groups[this.props.method][this.topicKey] ?
-        Object.values(this.props.Groups[this.props.method][this.topicKey].value) : null
+      topicResponse: this.props.Algernon[this.props.method][this.topicKey] ?
+        Object.values(this.props.Algernon[this.props.method][this.topicKey].value) : null
     }
   }
 
@@ -47,7 +47,7 @@ Item.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups
+    Algernon: state.contracts.Algernon
   }
 }
 

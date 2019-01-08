@@ -20,7 +20,7 @@ const INPUT_MAP = {
 class Create extends Component {
   constructor (props, context) {
     super(props)
-    this.methods = context.drizzle.contracts.Groups.methods
+    this.methods = context.drizzle.contracts.Algernon.methods
 
     this.state = {
       open: false,
@@ -132,7 +132,7 @@ Create.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups,
+    Algernon: state.contracts.Algernon,
     pendingUpload: state.data.pendingUpload,
     uploadedHashes: state.data.hashedContent
   }

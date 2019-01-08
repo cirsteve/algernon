@@ -8,7 +8,7 @@ import { getMultihash } from '../util/multihash'
 class Topic extends Component {
   constructor (props, context) {
     super(props)
-    this.methods = context.drizzle.contracts.Groups.methods
+    this.methods = context.drizzle.contracts.Algernon.methods
     this.id = props.match.params.id
     this.topicKey = this.methods.getPrivateTopic.cacheCall(this.id)
     this.tagIdsKey = this.methods.getPrivateTopicTagIds.cacheCall(this.id)
@@ -23,10 +23,10 @@ class Topic extends Component {
   }
 
   getRenderValues = () => ({
-    topicResponse: this.props.Groups.getPrivateTopic[this.topicKey] ?
-      Object.values(this.props.Groups.getPrivateTopic[this.topicKey].value) : null,
-    tagIds: this.props.Groups.getPrivateTopicTagIds[this.tagIdsKey] ?
-      Object.values(this.props.Groups.getPrivateTopicTagIds[this.tagIdsKey].value).map(id => parseInt(id)) : []
+    topicResponse: this.props.Algernon.getPrivateTopic[this.topicKey] ?
+      Object.values(this.props.Algernon.getPrivateTopic[this.topicKey].value) : null,
+    tagIds: this.props.Algernon.getPrivateTopicTagIds[this.tagIdsKey] ?
+      Object.values(this.props.Algernon.getPrivateTopicTagIds[this.tagIdsKey].value).map(id => parseInt(id)) : []
   })
 
   render () {
@@ -52,7 +52,7 @@ Topic.contextTypes = {
 
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups,
+    Algernon: state.contracts.Algernon,
     tags: state.tags.tags
   }
 }

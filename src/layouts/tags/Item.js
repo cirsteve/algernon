@@ -7,13 +7,13 @@ class Item extends Component {
   constructor (props, context) {
     super(props)
     console.log('tag item', props.idx)
-    this.tagKey = context.drizzle.contracts.Groups.methods.getTag.cacheCall(props.idx)
+    this.tagKey = context.drizzle.contracts.Algernon.methods.getTag.cacheCall(props.idx)
   }
 
   getRenderValues = () => {
     return {
-      tagResponse: this.props.Groups.getTag[this.tagKey] ?
-        this.props.Groups.getTag[this.tagKey].value : null
+      tagResponse: this.props.Algernon.getTag[this.tagKey] ?
+        this.props.Algernon.getTag[this.tagKey].value : null
     }
   }
 
@@ -39,7 +39,7 @@ Item.contextTypes = {
 
 const mapState = state => {
   return {
-    Groups: state.contracts.Groups
+    Algernon: state.contracts.Algernon
   }
 }
 

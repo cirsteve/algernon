@@ -7,7 +7,7 @@ class Add extends Component {
 
   submit = () => {
     this.props.clearInput()
-    this.context.drizzle.contracts.Groups.methods.addMasterTag.cacheSend(this.props.tag)
+    this.context.drizzle.contracts.Algernon.methods.addMasterTag.cacheSend(this.props.tag)
     this.props.tagSubmitted(this.props.tag)
   }
 

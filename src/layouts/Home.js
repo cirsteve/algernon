@@ -8,30 +8,30 @@ import GroupItem from './groups/Item'
 class Home extends Component {
   constructor (props, context) {
     super(props)
-    this.countKey = context.drizzle.contracts.Groups.methods.getGroupCount.cacheCall()
+    this.countKey = context.drizzle.contracts.Algernon.methods.getGroupCount.cacheCall()
   }
 
   getRenderValues = () => {
     return {
-      count: this.props.Groups.getGroupCount[this.countKey] ?
-        parseInt(this.props.Groups.getGroupCount[this.countKey].value, 10) : null
+      count: this.props.Algernon.getGroupCount[this.countKey] ?
+        parseInt(this.props.Algernon.getGroupCount[this.countKey].value, 10) : null
     }
   }
 
   render () {
     const { count} = this.getRenderValues();
-    let groups = 'Loading Groups'
+    let groups = 'Loading Algernon'
 
     if (Number.isInteger(count)) {
       if (count) {
         groups = range(count).map(id => <GroupItem key={id} id={id} />)
       } else {
-        groups = 'No Groups'
+        groups = 'No Algernon'
       }
     }
     return (
       <div>
-        <h3>Groups</h3>
+        <h3>Algernon</h3>
         {groups}
       </div>
     )
@@ -45,7 +45,7 @@ Home.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapStateToProps = state => {
   return {
-    Groups: state.contracts.Groups
+    Algernon: state.contracts.Algernon
   }
 }
 
