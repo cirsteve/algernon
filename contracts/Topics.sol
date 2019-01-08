@@ -7,9 +7,10 @@ import './Tags.sol';
 contract Topics is Multihash, Tags {
   uint256 topicId;
   uint256 privateTopicId;
+
   struct Topic {
     uint256 id;
-    uint256[] tagIds;
+    uint[] tagIds;
     address owner;
     MultiHash content;
   }
@@ -58,28 +59,17 @@ contract Topics is Multihash, Tags {
     topic.content = multihash;
   }
 
-  function updateTopicTags(uint256[] memory _tagIds, uint256 _topicId ) public {
-    Topic storage topic = topics[_topicId];
-    require(topic.owner == msg.sender);
-    topic.tagIds = _tagIds;
+  function updatePrivateTopic(uint256 _id, bytes32 _hash, uint8 _hashFunction, uint8 _size) public {
+    Topic storage topic = privateTopics[_id];
+    require(topic.owner == msg.sender, 'Topic to update must be owned by sender');
+    MultiHash memory multihash = createMultiHash(_hash, _hashFunction, _size);
+    topic.content = multihash;
   }
 
   function updatePrivateTopicTags( uint256[] memory _tagIds, uint256 _topicId) public {
     Topic storage topic = privateTopics[_topicId];
     require(topic.owner == msg.sender);
     topic.tagIds = _tagIds;
-  }
-
-  function addTopicTags(uint256[] memory _ids, uint256 _topicId) public {
-    Topic storage topic = topics[_topicId];
-    require(topic.owner == msg.sender, 'Topic must be owned by sender to update');
-    addTags(_ids, topic.tagIds);
-  }
-
-  function removeTopicTag(uint256 _idx, uint256 _topicId) public {
-    Topic storage topic = topics[_topicId];
-    require(topic.owner == msg.sender, 'Topic must be owned by sender to update');
-    removeTag(_idx, topic.tagIds);
   }
 
   function getTopicCount() public view returns (uint256) {
@@ -113,10 +103,6 @@ contract Topics is Multihash, Tags {
   function getPrivateTopic(uint256 _id) public view returns (bytes32, uint8, uint8, uint256, address) {
     require(msg.sender == privateTopics[_id].owner, 'Must own private topics to view');
     return getTopicInfo(privateTopics[_id]);
-  }
-
-  function getTopicTagIds( uint256 _id) public view returns (uint256[] memory) {
-    return topics[_id].tagIds;
   }
 
   function getPrivateTopicTagIds( uint256 _id) public view returns (uint256[] memory) {

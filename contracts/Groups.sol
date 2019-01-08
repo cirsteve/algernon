@@ -1,13 +1,9 @@
 pragma solidity ^0.5.0;
 
-
-import './Topics.sol';
-import './ERC20.sol';
+import './TaggedTopics.sol';
 
 /** @title Group. */
-contract Groups is Topics {
-    address payable owner;
-    address token_0x_address = 0xfC694174606c9f4E93090B74915c114Af86Db968;
+contract Groups is TaggedTopics {
 
     struct Group {
       uint256 id;
@@ -41,12 +37,6 @@ contract Groups is Topics {
       require (msg.sender == groups[_id].owner);
       _;
     }
-
-    constructor () public {
-      owner = msg.sender;
-    }
-
-    function () external {}
 
     function createGroup( uint256 _fee, uint256 _limit, uint256[] memory _tagIds, bytes32 _hash, uint8 _hashFunction, uint8 _size) public {
       MultiHash memory multihash = createMultiHash(_hash, _hashFunction, _size);
@@ -103,13 +93,6 @@ contract Groups is Topics {
         emit BalanceClaimed(msg.sender, balanceAmt);
     }
 
-    function withdraw (uint _amt) public {
-      require(msg.sender == owner);
-      owner.transfer(_amt);
-
-      emit Withdraw(owner, _amt);
-    }
-
     /** @dev issue credit.
       * @param _amt gwei to credit.
       * @param _recipient recipient of credit.
@@ -146,10 +129,6 @@ contract Groups is Topics {
         topicIds[i] = userGroup.topicId;
       }
       return (groupIds, topicIds);
-    }
-
-    function getContractTokenBalance() public view returns (uint256) {
-      return IERC20(token_0x_address).balanceOf(address(this));
     }
 
  }
