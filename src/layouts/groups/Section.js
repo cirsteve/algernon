@@ -9,6 +9,6 @@ export default ({groupIds, tags}) =>
     {groupIds ?
       <List ids={groupIds} />
       :
-      'Loading Algernon...'
+      'Loading Groups...'
     }
   </div>

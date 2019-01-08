@@ -8,6 +8,7 @@ import Groups from './layouts/Groups'
 import Topic from './layouts/Topic'
 import PrivateTopic from './layouts/PrivateTopic'
 import Topics from './layouts/Topics'
+import Tag from './layouts/Tag'
 import Tags from './layouts/Tags'
 import Token from './layouts/Token'
 import TopBar from './layouts/common/TopBar'
@@ -46,6 +47,7 @@ class App extends Component {
               <Route exact path="/privatetopics/:id" component={PrivateTopic} />
               <Route exact path="/groups" component={Groups} />
               <Route exact path="/groups/:id" component={Group} />
+              <Route exact path="/tag/:idx" component={Tag} />
               <Route exact path="/tags" component={Tags} />
               <Route exact path="/token" component={Token} />
             </Switch>

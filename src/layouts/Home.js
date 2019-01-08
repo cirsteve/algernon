@@ -20,13 +20,13 @@ class Home extends Component {
 
   render () {
     const { count} = this.getRenderValues();
-    let groups = 'Loading Algernon'
+    let groups = 'Loading Groups'
 
     if (Number.isInteger(count)) {
       if (count) {
         groups = range(count).map(id => <GroupItem key={id} id={id} />)
       } else {
-        groups = 'No Algernon'
+        groups = 'No Groups'
       }
     }
     return (

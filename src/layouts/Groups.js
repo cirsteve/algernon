@@ -27,13 +27,13 @@ class Algernon extends Component {
       if (count) {
         groups = range(count).map(id => <GroupItem key={id} id={id} />)
       } else {
-        groups = 'No tags'
+        groups = 'No groups'
       }
     }
 
     return (
       <div>
-        <h1>Algernon</h1>
+        <h1>Groups</h1>
 
         {groups}
       </div>

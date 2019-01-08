@@ -22,8 +22,9 @@ contract Topics is Multihash, Tags {
 
   event TopicCreated(uint256 id, address indexed owner);
 
-  function createUserTopic(uint256[] memory _tagIds, MultiHash memory _multiHash, address _user) internal returns (uint256) {
-    Topic memory topic = Topic(topicId, _tagIds, _user, _multiHash);
+  function createUserTopic(MultiHash memory _multiHash, address _user) internal returns (uint256) {
+    uint[] memory defaultTagIds;
+    Topic memory topic = Topic(topicId, defaultTagIds, _user, _multiHash);
     topics.push(topic);
     userTopicIds[msg.sender].push(topic.id);
     topicId++;
@@ -40,11 +41,6 @@ contract Topics is Multihash, Tags {
     emit TopicCreated(topic.id, topic.owner);
 
     return topic.id;
-  }
-
-  function createTopic(uint256[] memory _tagIds, bytes32 _hash, uint8 _hashFunction, uint8 _size) public {
-    MultiHash memory multihash = createMultiHash(_hash, _hashFunction, _size);
-    createUserTopic(_tagIds, multihash, msg.sender);
   }
 
   function createPrivateTopic(uint256[] memory _tagIds, bytes32 _hash, uint8 _hashFunction, uint8 _size) public {
@@ -98,6 +94,10 @@ contract Topics is Multihash, Tags {
 
   function getTopic(uint256 _id) public view returns (bytes32, uint8, uint8, uint256, address) {
     return getTopicInfo(topics[_id]);
+  }
+
+  function getTopicTagIds( uint256 _id) public view returns (uint256[] memory) {
+    return topics[_id].tagIds;
   }
 
   function getPrivateTopic(uint256 _id) public view returns (bytes32, uint8, uint8, uint256, address) {

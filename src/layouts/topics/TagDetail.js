@@ -57,7 +57,7 @@ class Detail extends Component {
       <TopicTagsForm tagIds={tagIds} options={tagOptions} onSubmit={this.onSubmit} topicId={topicId} onCancel={this.onCancel} />
       :
       <div className={classes.tags}>
-        {tagIds.map(id => <TagItem key={id} label={tags[id]} />)}
+        {tagIds.map(id => <TagItem key={id} label={tags[id]} idx={id} />)}
       </div>
 
 

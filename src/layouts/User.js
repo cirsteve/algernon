@@ -14,8 +14,8 @@ class User extends Component {
     this.methods = context.drizzle.contracts.Algernon.methods
     const address = props.match.params.address
 
-    this.userAlgernonKey = this.methods.getUserAlgernon.cacheCall(address)
-    this.userOwnedAlgernonKey = this.methods.getUserOwnedGroupIds.cacheCall(address)
+    this.userGroupsKey = this.methods.getUserGroups.cacheCall(address)
+    this.userOwnedGroupsey = this.methods.getUserOwnedGroupIds.cacheCall(address)
     this.topicIdsKey = this.methods.getUserTopicIds.cacheCall(address)
     this.tagCountKey = this.methods.getTagCount.cacheCall()
     this.privateTopicIdsKey = ''
@@ -34,10 +34,10 @@ class User extends Component {
   getRenderValues = () => {
     const { Algernon } = this.props
     return {
-      groups: Algernon.getUserAlgernon[this.userAlgernonKey] ?
-        Algernon.getUserAlgernon[this.userAlgernonKey].value : [[]],
-      ownedIds: Algernon.getUserOwnedGroupIds[this.userOwnedAlgernonKey] ?
-        Algernon.getUserOwnedGroupIds[this.userOwnedAlgernonKey].value : null,
+      groups: Algernon.getUserGroups[this.userGroupsKey] ?
+        Algernon.getUserGroups[this.userGroupsKey].value : [[]],
+      ownedIds: Algernon.getUserOwnedGroupIds[this.userOwnedGroupsKey] ?
+        Algernon.getUserOwnedGroupIds[this.userOwnedGroupsKey].value : null,
       topicIds: Algernon.getUserTopicIds[this.topicIdsKey] ?
         Algernon.getUserTopicIds[this.topicIdsKey].value : null,
       privateTopicIds: Algernon.getUserPrivateTopicIds[this.privateTopicIdsKey] ?
@@ -59,11 +59,11 @@ class User extends Component {
         content: <TopicSection key='topic' address={address} isOwner={isOwner} topicIds={topicIds} tags={tags} />
       },
       {
-        label: 'Enrolled Algernon',
+        label: 'Enrolled Groups',
         content: <GroupList key='groups' ids={groups[0]} isOwner={isOwner} />
       },
       {
-        label: 'Owned Algernon',
+        label: 'Owned Groups',
         content: <GroupSection key='owned' groupIds={ownedIds} tags={tags} isOwner={isOwner} />
       }
     ]

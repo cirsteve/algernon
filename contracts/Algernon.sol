@@ -8,7 +8,7 @@ import './ERC20.sol';
 /** @title Group. */
 contract Algernon is Groups, Percent {
     address payable owner;
-    address token_0x_address = 0xfC694174606c9f4E93090B74915c114Af86Db968;
+    address token_0x_address = 0x0295e71F699d069450a88fB046f75d83F7606651;
 
     uint PRECISION = 10 ** 5;
     uint OWNER_PERCENT  = 15 * PRECISION;

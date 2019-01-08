@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import Chip from './Chip'
 
 class Item extends Component {
@@ -22,7 +23,10 @@ class Item extends Component {
     let tag = 'Loading Tag'
 
     if (tagResponse) {
-      tag = <Chip label={tagResponse} />
+      tag =
+        <Link to={`/tag/${this.props.idx}`}>
+          <Chip label={tagResponse} />
+        </Link>
     }
 
     return (

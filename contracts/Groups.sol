@@ -52,7 +52,7 @@ contract Groups is TaggedTopics {
       require(msg.value == group.fee, 'Enrollment Fee required');
       require(group.members.length < group.limit);
       //MultiHash memory multihash = createMultiHash(_hash, _hashFunction, _size);
-      uint256 topicId = createUserTopic(group.tagIds, group.content, msg.sender);
+      uint256 topicId = createUserTopic(group.content, msg.sender);
       UserGroup memory userGroup = UserGroup(group.id, topicId);
       userGroups[msg.sender].push(userGroup);
       group.balance += msg.value;

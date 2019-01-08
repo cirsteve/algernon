@@ -67,6 +67,13 @@ contract TaggedTopics is Topics {
     emit TopicTagUpdated(_topicId, _tagId, false);
   }
 
+  function createTopic(uint256[] memory _tagIds, bytes32 _hash, uint8 _hashFunction, uint8 _size) public {
+    MultiHash memory multihash = createMultiHash(_hash, _hashFunction, _size);
+    uint topicId = createUserTopic(multihash, msg.sender);
+    for (uint i = 0; i<_tagIds.length;i++) {
+      addTagTopic(topicId, _tagIds[i]);
+    }
+  }
 
   function getTagTopicIds(uint _tagId) public view returns (uint[] memory) {
     return topicsByTag[_tagId];
