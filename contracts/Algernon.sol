@@ -14,7 +14,7 @@ contract Algernon is Groups, Percent {
     uint OWNER_PERCENT  = 15 * PRECISION;
     uint STAKER_PERCENT = 10 * PRECISION;
 
-    mapping (address => uint) tokenBalances;
+    mapping (address => uint) public tokenBalances;
 
     constructor () public {
       owner = msg.sender;
@@ -95,4 +95,22 @@ contract Algernon is Groups, Percent {
       return IERC20(token_0x_address).balanceOf(address(this));
     }
 
+    function getAlgernonTokenBalance(address _account) public view returns (uint) {
+      return tokenBalances[_account];
+    }
+
+    function depositTokens(uint _amt) public {
+      uint depositerBalance = IERC20(token_0x_address).balanceOf(msg.sender);
+      require(depositerBalance >= _amt, 'Insufficient token balance');
+
+      ERC20(token_0x_address).transferFrom(msg.sender, address(this), _amt);
+      tokenBalances[msg.sender] += _amt;
+    }
+
+    function withdrawTokens(uint _amt) public {
+      require(tokenBalances[msg.sender] >= _amt, 'Insufficient token balance');
+      tokenBalances[msg.sender] -= _amt;
+      IERC20(token_0x_address).transfer(msg.sender, _amt);
+
+    }
  }

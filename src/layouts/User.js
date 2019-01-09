@@ -7,7 +7,10 @@ import Tabs from './common/Tabs'
 import GroupList from './groups/List'
 import GroupSection from './groups/Section'
 import TopicSection from './topics/Section'
-import Blockie from './common/Blockie';
+import Blockie from './common/Blockie'
+import Deposit from './ui/DepositTokens'
+import Withdraw from './ui/WithdrawTokens'
+
 class User extends Component {
   constructor (props, context) {
     super(props)
@@ -17,6 +20,7 @@ class User extends Component {
     this.userGroupsKey = this.methods.getUserGroups.cacheCall(address)
     this.userOwnedGroupsey = this.methods.getUserOwnedGroupIds.cacheCall(address)
     this.topicIdsKey = this.methods.getUserTopicIds.cacheCall(address)
+    this.tokenBalanceKey = this.methods.getAlgernonTokenBalance.cacheCall(address)
     this.tagCountKey = this.methods.getTagCount.cacheCall()
     this.privateTopicIdsKey = ''
     if (props.connectedAddress === address) {
@@ -43,13 +47,15 @@ class User extends Component {
       privateTopicIds: Algernon.getUserPrivateTopicIds[this.privateTopicIdsKey] ?
         Algernon.getUserPrivateTopicIds[this.privateTopicIdsKey].value : null,
       tagCount: Algernon.getTagCount[this.tagCountKey] ?
-        parseInt(Algernon.getTagCount[this.tagCountKey].value) : null
+        parseInt(Algernon.getTagCount[this.tagCountKey].value) : null,
+      tokenBalance: Algernon.getAlgernonTokenBalance[this.tokenBalanceKey] ?
+        parseInt(Algernon.getAlgernonTokenBalance[this.tokenBalanceKey].value) : null
     }
   }
 
   render () {
     const { tags, connectedAddress } = this.props
-    const { groups, ownedIds, topicIds, privateTopicIds } = this.getRenderValues();
+    const { groups, ownedIds, topicIds, privateTopicIds, tokenBalance } = this.getRenderValues();
     const address = this.props.match.params.address
     const isOwner = connectedAddress === address
 
@@ -79,8 +85,16 @@ class User extends Component {
     return (
       <div>
         <div style={{display: 'flex', marginBottom: '0.5em'}}>
-          <Blockie address={address} size={15} scale={7} />
-          <h3>{address}</h3>
+          <div>
+            <Blockie address={address} size={15} scale={7} />
+          </div>
+          <div>
+            <h3>{address}</h3>
+            <div>
+              Tokens Deposited: {tokenBalance} <br/>
+              <Deposit value={100} />
+            </div>
+          </div>
         </div>
         <Tabs tabs={tabs} />
       </div>
