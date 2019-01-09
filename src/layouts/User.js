@@ -8,8 +8,7 @@ import GroupList from './groups/List'
 import GroupSection from './groups/Section'
 import TopicSection from './topics/Section'
 import Blockie from './common/Blockie'
-import Deposit from './ui/DepositTokens'
-import Withdraw from './ui/WithdrawTokens'
+import TokenSection from './token/Section'
 
 class User extends Component {
   constructor (props, context) {
@@ -90,10 +89,7 @@ class User extends Component {
           </div>
           <div>
             <h3>{address}</h3>
-            <div>
-              Tokens Deposited: {tokenBalance} <br/>
-              <Deposit value={100} />
-            </div>
+            <TokenSection balance={tokenBalance}/>
           </div>
         </div>
         <Tabs tabs={tabs} />

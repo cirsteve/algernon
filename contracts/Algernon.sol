@@ -103,7 +103,7 @@ contract Algernon is Groups, Percent {
       uint depositerBalance = IERC20(token_0x_address).balanceOf(msg.sender);
       require(depositerBalance >= _amt, 'Insufficient token balance');
 
-      ERC20(token_0x_address).transferFrom(msg.sender, address(this), _amt);
+      IERC20(token_0x_address).transferFrom(msg.sender, address(this), _amt);
       tokenBalances[msg.sender] += _amt;
     }
 
