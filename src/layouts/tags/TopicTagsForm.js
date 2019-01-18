@@ -18,8 +18,8 @@ class Form extends Component {
   onSubmit = () => {
     const {topicId} = this.props
     const removedIds = reverse(difference(this.props.tagIds, this.state.tagIds))
-    const removedIdxs = removedIds.map(id => findIndex(this.props.tagIds, i=> i == id))
-    const topicTagIdxs = removedIds.map(id => findIndex(this.props.tagTopicIds[id], i => i == topicId))
+    const removedIdxs = removedIds.map(id => findIndex(this.props.tagIds, i=> i === id))
+    const topicTagIdxs = removedIds.map(id => findIndex(this.props.tagTopicIds[id], i => i === topicId))
     const addedIds = difference(this.state.tagIds, this.props.tagIds, this.props.tagTopicIds)
     console.log('tag update: ', topicId, addedIds, removedIds, removedIdxs, topicTagIdxs, this.props.tagTopicIds)
     if (addedIds.length) {

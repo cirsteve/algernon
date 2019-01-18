@@ -52,7 +52,7 @@ class Detail extends Component {
   getTagTopicsIds = () => {
     const tagTopicsIds = this.props.Algernon.getTagAddressTopicIds
     return Object.keys(this.tagTopicsKeys).reduce((acc, key) => {
-      acc[key] = tagTopicsIds[this.tagTopicsKeys[key]] ? tagTopicsIds[this.tagTopicsKeys[key]].value : []
+      acc[key] = tagTopicsIds[this.tagTopicsKeys[key]] ? tagTopicsIds[this.tagTopicsKeys[key]].value.map(id => parseInt(id, 10)) : []
       return acc
     }, {})
   }
@@ -70,7 +70,7 @@ class Detail extends Component {
   updateEditing = editing => this.setState({...this.state, editing})
 
   render () {
-    const { classes, isOwner, address, tags, tagIds, topicId } = this.props
+    const { classes, isOwner, tags, tagIds, topicId } = this.props
 
     const tagTopicIds = this.getTagTopicsIds();
 

@@ -17,11 +17,6 @@ contract TaggedTopics is Topics {
     uint[] stakeIdxs;
   }
 
-  struct TaggedTopics {
-    mapping (address => uint[]) topicsByAddress;
-    address[] addresses;
-  }
-
   Stake[] stakes;
   //topicId -> tagId -> stakeIdx
   mapping (uint => mapping (uint => TagStake)) stakesByTopic;
@@ -81,11 +76,14 @@ contract TaggedTopics is Topics {
     require(userTopicsByTag[_tagId][msg.sender][_taggedUserTopicsIdx] ==_topicId, 'Topic id and index mismatch');
 
     topicIsTagged[_topicId][_tagId] = false;
-
-    topics[_topicId].tagIds[_topicTagsIdx] = topics[_topicId].tagIds[topics[_topicId].tagIds.length-1];
+    if (topics[_topicId].tagIds.length > 1) {
+      topics[_topicId].tagIds[_topicTagsIdx] = topics[_topicId].tagIds[topics[_topicId].tagIds.length-1];
+    }
     topics[_topicId].tagIds.length--;
 
-    userTopicsByTag[_tagId][msg.sender][_taggedUserTopicsIdx] = userTopicsByTag[_tagId][msg.sender][userTopicsByTag[_tagId][msg.sender].length-1];
+    if (userTopicsByTag[_tagId][msg.sender].length > 1) {
+      userTopicsByTag[_tagId][msg.sender][_taggedUserTopicsIdx] = userTopicsByTag[_tagId][msg.sender][userTopicsByTag[_tagId][msg.sender].length-1];
+    }
     userTopicsByTag[_tagId][msg.sender].length--;
 
     emit TopicTagUpdated(_topicId, _tagId, false);

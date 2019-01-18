@@ -9,7 +9,8 @@ function* getTag(get, id) {
 
 function* getTagTopicIds (tagId, address, get) {
   const topicIds = yield call(get(tagId, address).call);
-  return topicIds;
+  console.log('got topic tags: ', topicIds)
+  return topicIds.map(id => parseInt(id, 10));
 }
 
 function* getTags(action) {
@@ -43,6 +44,7 @@ function* getTagCount(action) {
 function* getTopicsForTags(action) {
   const { getAddresses, getTopicIds, tagId}  = action.payload
   try {
+    console.log('getting topics for tags')
     const addresses = yield call(getAddresses(tagId).call)
     const allAddresses = []
     let addressTopics = []

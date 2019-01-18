@@ -1,6 +1,6 @@
 pragma solidity ^0.5.0;
 
-import './SafeMath.sol';
+import "./SafeMath.sol";
 // File: openzeppelin-solidity/contracts/token/ERC20/IERC20.sol
 
 /**
@@ -101,13 +101,13 @@ contract ERC20 is IERC20 {
    * @dev Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.
    * Beware that changing an allowance with this method brings the risk that someone may use both the old
    * and the new allowance by unfortunate transaction ordering. One possible solution to mitigate this
-   * race condition is to first reduce the spender's allowance to 0 and set the desired value afterwards:
+   * race condition is to first reduce the spender"s allowance to 0 and set the desired value afterwards:
    * https://github.com/ethereum/EIPs/issues/20#issuecomment-263524729
    * @param spender The address which will spend the funds.
    * @param value The amount of tokens to be spent.
    */
   function approve(address spender, uint256 value) public returns (bool) {
-    require(spender != address(0));
+    require(spender != address(0), "spender is not approved");
 
     _allowed[msg.sender][spender] = value;
     emit Approval(msg.sender, spender, value);
@@ -128,7 +128,7 @@ contract ERC20 is IERC20 {
     public
     returns (bool)
   {
-    require(value <= _allowed[from][msg.sender]);
+    require(value <= _allowed[from][msg.sender], "value is under allowed limit");
 
     _allowed[from][msg.sender] = _allowed[from][msg.sender].sub(value);
     _transfer(from, to, value);
@@ -151,7 +151,7 @@ contract ERC20 is IERC20 {
     public
     returns (bool)
   {
-    require(spender != address(0));
+    require(spender != address(0), "spender is not approved");
 
     _allowed[msg.sender][spender] = (
       _allowed[msg.sender][spender].add(addedValue));
@@ -175,7 +175,7 @@ contract ERC20 is IERC20 {
     public
     returns (bool)
   {
-    require(spender != address(0));
+    require(spender != address(0), "spender is not approved");
 
     _allowed[msg.sender][spender] = (
       _allowed[msg.sender][spender].sub(subtractedValue));
@@ -190,8 +190,8 @@ contract ERC20 is IERC20 {
   * @param value The amount to be transferred.
   */
   function _transfer(address from, address to, uint256 value) internal {
-    require(value <= _balances[from]);
-    require(to != address(0));
+    require(value <= _balances[from], "value is below balance");
+    require(to != address(0), "spender is not approved");
 
     _balances[from] = _balances[from].sub(value);
     _balances[to] = _balances[to].add(value);
@@ -206,7 +206,7 @@ contract ERC20 is IERC20 {
    * @param value The amount that will be created.
    */
   function _mint(address account, uint256 value) internal {
-    require(account != address(0));
+    require(account != address(0), "minter is not approved");
     _totalSupply = _totalSupply.add(value);
     _balances[account] = _balances[account].add(value);
     emit Transfer(address(0), account, value);
@@ -219,8 +219,8 @@ contract ERC20 is IERC20 {
    * @param value The amount that will be burnt.
    */
   function _burn(address account, uint256 value) internal {
-    require(account != address(0));
-    require(value <= _balances[account]);
+    require(account != address(0), "burner is not approved");
+    require(value <= _balances[account], "value is below balance");
 
     _totalSupply = _totalSupply.sub(value);
     _balances[account] = _balances[account].sub(value);
@@ -229,13 +229,13 @@ contract ERC20 is IERC20 {
 
   /**
    * @dev Internal function that burns an amount of the token of a given
-   * account, deducting from the sender's allowance for said account. Uses the
+   * account, deducting from the sender"s allowance for said account. Uses the
    * internal burn function.
    * @param account The account whose tokens will be burnt.
    * @param value The amount that will be burnt.
    */
   function _burnFrom(address account, uint256 value) internal {
-    require(value <= _allowed[account][msg.sender]);
+    require(value <= _allowed[account][msg.sender], "value is below allowed limit");
 
     // Should https://github.com/OpenZeppelin/zeppelin-solidity/issues/707 be accepted,
     // this function needs to emit an event with the updated approval.
@@ -260,18 +260,18 @@ library Roles {
    * @dev give an account access to this role
    */
   function add(Role storage role, address account) internal {
-    require(account != address(0));
+    require(account != address(0), "spender is not approved");
     require(!has(role, account));
 
     role.bearer[account] = true;
   }
 
   /**
-   * @dev remove an account's access to this role
+   * @dev remove an account"s access to this role
    */
   function remove(Role storage role, address account) internal {
-    require(account != address(0));
-    require(has(role, account));
+    require(account != address(0), "spender is not approved");
+    require(has(role, account), "spender is not approved");
 
     role.bearer[account] = false;
   }
@@ -285,7 +285,7 @@ library Roles {
     view
     returns (bool)
   {
-    require(account != address(0));
+    require(account != address(0), "spender is not approved");
     return role.bearer[account];
   }
 }
@@ -305,7 +305,7 @@ contract MinterRole {
   }
 
   modifier onlyMinter() {
-    require(isMinter(msg.sender));
+    require(isMinter(msg.sender), "spender is not approved");
     _;
   }
 
@@ -366,7 +366,7 @@ contract ERC20Capped is ERC20Mintable {
     uint256 private _cap;
 
     constructor (uint256 cap) public {
-        require(cap > 0);
+        require(cap > 0, "cap must be greater then zero");
         _cap = cap;
     }
 
@@ -378,7 +378,7 @@ contract ERC20Capped is ERC20Mintable {
     }
 
     function _mint(address account, uint256 value) internal {
-        require(totalSupply().add(value) <= _cap);
+        require(totalSupply().add(value) <= _cap, "mint exceeds cap");
         super._mint(account, value);
     }
 }

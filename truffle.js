@@ -14,7 +14,7 @@ module.exports = {
         //return new PKWalletProvider(process.env.PRIVATE_KEY, `https://rinkeby.infura.io/${process.env.INFURA_KEY}`)
       },
       network_id: 4,
-      //gas: 4612388 // Gas limit used for deploys
+      gas: 5612388 // Gas limit used for deploys
     }
   },
   solc: {
