@@ -180,7 +180,7 @@ class Detail extends Component {
         <Fragment>
           {metaData}
           <div>
-            <TagDetail isOwner={connectedAddress === owner} tagIds={tagIds} topicId={parseInt(id)} />
+            <TagDetail isOwner={connectedAddress === owner}  address={connectedAddress} tagIds={tagIds} topicId={parseInt(id)} />
           </div>
           <div>
             {note}

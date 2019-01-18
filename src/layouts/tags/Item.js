@@ -21,6 +21,7 @@ class Item extends Component {
   render () {
     const { tagResponse } = this.getRenderValues();
     let tag = 'Loading Tag'
+    console.log('tag item: ', tagResponse, this.props.idx)
 
     if (tagResponse) {
       tag =

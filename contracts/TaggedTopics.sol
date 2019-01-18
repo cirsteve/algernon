@@ -17,52 +17,76 @@ contract TaggedTopics is Topics {
     uint[] stakeIdxs;
   }
 
+  struct TaggedTopics {
+    mapping (address => uint[]) topicsByAddress;
+    address[] addresses;
+  }
+
   Stake[] stakes;
   //topicId -> tagId -> stakeIdx
   mapping (uint => mapping (uint => TagStake)) stakesByTopic;
-  mapping (address => uint[]) stakesByUser;
-
-  mapping (uint => uint[]) topicsByTag;
   //topicId -> tagId -> bool
   mapping (uint => mapping (uint => bool)) topicIsTagged;
+
+  mapping (address => uint[]) stakesByUser;
+
+  //tagId -> address => topicId
+  mapping (uint => mapping(address => uint[])) userTopicsByTag;
+  mapping (uint => mapping(address => bool)) userHasTagged;
+  mapping (uint => address[]) usersByTag;
 
   event TopicTagUpdated(uint topicId, uint tagId, bool added);
   event StakeAdded(address staker, uint toalAmt, uint stakeAmt, uint topicId, uint tagId);
   event StakeUpdated(uint prevAmt, uint amt, uint stakeIdx);
 
-  function updateTopicTags(uint _topicId, uint _topicIdx, uint[] memory _addIds, uint[] memory _removeIds, uint[] memory _removeIdxs) public {
+  function updateTopicTags(uint[] memory _addIds, uint[] memory _removeIds, uint[] memory _topicTagIdxs, uint[] memory _taggedUserTopicIdxs, uint _topicId) public {
     for (uint i=0; i < _removeIds.length;i++) {
-      removeTagTopic(_topicId, _topicIdx, _removeIds[i], _removeIdxs[i]);
+      removeTagTopic(_topicId, _removeIds[i], _topicTagIdxs[i], _taggedUserTopicIdxs[i]);
     }
 
-    for (uint i = 0; i<_addIds.length;i++) {
-      addTagTopic(_topicId, _addIds[i]);
+    for (uint t = 0; t<_addIds.length;t++) {
+      addTagTopic(_topicId, _addIds[t]);
+    }
+}
+
+  function removeTopicTags(uint[] memory _removeIds, uint[] memory _topicTagIdxs, uint[] memory _taggedUserTopicIdxs, uint _topicId) public {
+    for (uint i=0; i < _removeIds.length;i++) {
+      removeTagTopic(_topicId, _removeIds[i], _topicTagIdxs[i], _taggedUserTopicIdxs[i]);
     }
   }
+
 
 
   function addTagTopic(uint _topicId, uint _tagId) internal {
     require(topicIsTagged[_topicId][_tagId] == false, 'Topic is already tagged');
     require(topics[_topicId].owner == msg.sender, 'Only topic owner can update tags');
 
+    if (userHasTagged[_tagId][msg.sender] == false) {
+      userHasTagged[_tagId][msg.sender] = true;
+      usersByTag[_tagId].push(msg.sender);
+    }
+
     topicIsTagged[_topicId][_tagId] = true;
-    topicsByTag[_tagId].push(_topicId);
+    userTopicsByTag[_tagId][msg.sender].push(_topicId);
     topics[_topicId].tagIds.push(_tagId);
 
     emit TopicTagUpdated(_topicId, _tagId, true);
   }
 
 
-  function removeTagTopic(uint _topicId, uint _topicIdx, uint _tagId, uint _tagIdx) internal {
+  function removeTagTopic(uint _topicId, uint _tagId, uint _topicTagsIdx, uint _taggedUserTopicsIdx) internal {
     require(topicIsTagged[_topicId][_tagId] == true, 'Topic is not tagged');
     require(topics[_topicId].owner == msg.sender, 'Only topic owner can update tags');
-    require(topics[_topicId].tagIds[_tagIdx] ==_tagId, 'Tag id and index mismatch');
-    require(topicsByTag[_tagId][_topicIdx] ==_topicId, 'Topic id and index mismatch');
+    require(topics[_topicId].tagIds[_topicTagsIdx] ==_tagId, 'Tag id and index mismatch');
+    require(userTopicsByTag[_tagId][msg.sender][_taggedUserTopicsIdx] ==_topicId, 'Topic id and index mismatch');
 
     topicIsTagged[_topicId][_tagId] = false;
 
-    topicsByTag[_tagId][_topicIdx] = topicsByTag[_tagId][topicsByTag[_tagId].length-1];
-    topicsByTag[_tagId].length--;
+    topics[_topicId].tagIds[_topicTagsIdx] = topics[_topicId].tagIds[topics[_topicId].tagIds.length-1];
+    topics[_topicId].tagIds.length--;
+
+    userTopicsByTag[_tagId][msg.sender][_taggedUserTopicsIdx] = userTopicsByTag[_tagId][msg.sender][userTopicsByTag[_tagId][msg.sender].length-1];
+    userTopicsByTag[_tagId][msg.sender].length--;
 
     emit TopicTagUpdated(_topicId, _tagId, false);
   }
@@ -75,8 +99,12 @@ contract TaggedTopics is Topics {
     }
   }
 
-  function getTagTopicIds(uint _tagId) public view returns (uint[] memory) {
-    return topicsByTag[_tagId];
+  function getTagAddresses(uint _tagId) public view returns (address[] memory) {
+    return usersByTag[_tagId];
+  }
+
+  function getTagAddressTopicIds(uint _tagId, address _address) public view returns (uint[] memory) {
+    return userTopicsByTag[_tagId][_address];
   }
 
   function getTagStake(uint _topicId, uint _tagId) public view returns (uint) {

@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
+import {difference, findIndex, reverse} from 'lodash'
 import Select from '../common/forms/Select'
 import IconSubmit from '../common/forms/IconSubmit'
 
@@ -15,11 +16,31 @@ class Form extends Component {
   updateTag = (e) => this.setState({...this.state, tagIds: e.target.value})
 
   onSubmit = () => {
-    const updatedIds = [...this.state.tagIds]
-    this.props.onSubmit(updatedIds)
-    console.log('tsag form submit: ', this.props, updatedIds)
-    let trx = this.context.drizzle.contracts.Algernon.methods.updateTopicTags.cacheSend(updatedIds, this.props.topicId)
-    console.log('just cache sent: ', trx)
+    const {topicId} = this.props
+    const removedIds = reverse(difference(this.props.tagIds, this.state.tagIds))
+    const removedIdxs = removedIds.map(id => findIndex(this.props.tagIds, i=> i == id))
+    const topicTagIdxs = removedIds.map(id => findIndex(this.props.tagTopicIds[id], i => i == topicId))
+    const addedIds = difference(this.state.tagIds, this.props.tagIds, this.props.tagTopicIds)
+    console.log('tag update: ', topicId, addedIds, removedIds, removedIdxs, topicTagIdxs, this.props.tagTopicIds)
+    if (addedIds.length) {
+      this.context.drizzle.contracts.Algernon.methods.updateTopicTags.cacheSend(
+        addedIds,
+        removedIds,
+        removedIdxs,
+        topicTagIdxs,
+        topicId
+      )
+    } else {
+      this.context.drizzle.contracts.Algernon.methods.removeTopicTags.cacheSend(
+        removedIds,
+        removedIdxs,
+        topicTagIdxs,
+        topicId
+      )
+    }
+
+
+
     this.setState({...this.state, tagIds:null})
   }
 

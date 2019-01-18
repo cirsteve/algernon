@@ -8,7 +8,7 @@ import './ERC20.sol';
 /** @title Group. */
 contract Algernon is Groups, Percent {
     address payable owner;
-    address token_0x_address = 0x0295e71F699d069450a88fB046f75d83F7606651;
+    address token_0x_address;
 
     uint PRECISION = 10 ** 5;
     uint OWNER_PERCENT  = 15 * PRECISION;
@@ -16,8 +16,9 @@ contract Algernon is Groups, Percent {
 
     mapping (address => uint) public tokenBalances;
 
-    constructor () public {
+    constructor (address _tokenAddress) public {
       owner = msg.sender;
+      token_0x_address = _tokenAddress;
     }
 
     function () external {}
@@ -59,8 +60,8 @@ contract Algernon is Groups, Percent {
       uint stakeAmt = distributeStake(tagStake, _amt, msg.sender);
       Stake memory stake = Stake(msg.sender, stakeAmt, _topicId, _tagId);
       stakes.push(stake);
-      tagStake.stakeIdxs.push(stakes.length-1);
       tagStake.totalStaked += stakeAmt;
+      tagStake.stakeIdxs.push(stakes.length-1);
       stakesByUser[msg.sender].push(stakes.length-1);
 
       emit StakeAdded(msg.sender, _amt, stakeAmt, _topicId, _tagId);
@@ -87,7 +88,31 @@ contract Algernon is Groups, Percent {
       stake.amt -= _amt;
       tokenBalances[msg.sender] += _amt;
 
+      stakesByTopic[stake.topicId][stake.tagId].totalStaked -= _amt;
+
       emit StakeUpdated(prevAmt, stake.amt, _stakeIdx);
+
+    }
+
+    function removeStake(uint _stakeIdx, uint _tagStakeIdx, uint _userStakeIdx) public {
+      Stake storage stake = stakes[_stakeIdx];
+      require(stake.staker == msg.sender, 'Stake not owned by sender');
+      uint prevAmt = stake.amt;
+      stake.amt = 0;
+      tokenBalances[msg.sender] += prevAmt;
+
+      uint[] storage tagStakes = stakesByTopic[stake.topicId][stake.tagId].stakeIdxs;
+      require(tagStakes[_tagStakeIdx] == _stakeIdx, 'Stake Index and Tag Stake Index mismatch');
+      stakesByTopic[stake.topicId][stake.tagId].totalStaked -= prevAmt;
+      tagStakes[_tagStakeIdx] = tagStakes[tagStakes.length-1];
+      tagStakes.length--;
+
+      uint[] storage userStakes = stakesByUser[msg.sender];
+      require(userStakes[_userStakeIdx] == _stakeIdx, 'Stake Index and User Stake Index mismatch');
+      userStakes[_userStakeIdx] = userStakes[userStakes.length-1];
+      userStakes.length--;
+
+      emit StakeUpdated(prevAmt, 0, _stakeIdx);
 
     }
 

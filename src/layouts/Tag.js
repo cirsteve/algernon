@@ -11,23 +11,27 @@ class Tag extends Component {
     this.idx = props.match.params.idx
 
     this.tagKey = this.methods.getTag.cacheCall(this.idx)
-    this.topicIdsKey = this.methods.getTagTopicIds.cacheCall(this.idx)
 
   }
+
+  componentDidMount = () => this.props.getTagTopics(
+    this.idx,
+    this.methods.getTagAddresses,
+    this.methods.getTagAddressTopicIds
+  )
 
   getRenderValues = () => {
     return {
       tag: this.props.Algernon.getTag[this.tagKey] ?
-        this.props.Algernon.getTag[this.tagKey].value : null,
-      topicIds: this.props.Algernon.getTagTopicIds[this.topicIdsKey] ?
-        Object.values(this.props.Algernon.getTagTopicIds[this.topicIdsKey].value) : null
+        this.props.Algernon.getTag[this.tagKey].value : null
       }
   }
 
   render () {
-    const { tag, topicIds } = this.getRenderValues()
+    const { tagTopicIds } = this.props
+    const { tag } = this.getRenderValues()
+    const topicIds = tagTopicIds[this.idx]
 
-    console.log(tag, topicIds)
     return (
       <div>
         <div>
@@ -47,18 +51,20 @@ Tag.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
-    address: state.accounts[0],
     Algernon: state.contracts.Algernon,
+    tagTopicIds: state.tags.tagTopicIds
   }
 }
 
-const mapDispatch = (dispatch) => {
-    return {
-        saveNote: (upload, save) => dispatch({type: 'IPFS_UPLOAD_THEN_SAVE', payload: {upload, save}}),
-        getIPFSUpload: hash => dispatch({type: 'GET_IPFS_UPLOAD', payload: {hash}}),
-        ipfsUploadAcked: () => dispatch({type: 'IPFS_UPLOAD_ACKED'})
-
-    };
-}
+const mapDispatch = (dispatch) => ({
+  getTagTopics: (tagId, getAddresses, getTopicIds) => dispatch({
+    type: 'GET_TAG_TOPICS',
+    payload: {
+      tagId,
+      getAddresses,
+      getTopicIds
+    }
+  })
+})
 
 export default drizzleConnect(withRouter(Tag), mapState, mapDispatch);
