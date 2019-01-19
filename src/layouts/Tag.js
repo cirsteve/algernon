@@ -9,6 +9,7 @@ class Tag extends Component {
     super(props)
     this.methods = context.drizzle.contracts.Algernon.methods
     this.idx = props.match.params.idx
+    this.userStakesKey = this.methods.getUserStakes.cacheCall(props.address)
 
     this.tagKey = this.methods.getTag.cacheCall(this.idx)
 
@@ -23,7 +24,8 @@ class Tag extends Component {
   getRenderValues = () => {
     return {
       tag: this.props.Algernon.getTag[this.tagKey] ?
-        this.props.Algernon.getTag[this.tagKey].value : null
+        this.props.Algernon.getTag[this.tagKey].value : null,
+      userStakes
       }
   }
 
@@ -38,7 +40,7 @@ class Tag extends Component {
         {tag ? <h1>{tag}</h1> : 'Loading'}
         </div>
         <h3>Tagged Topics</h3>
-        {topicIds ? <TopicList ids={topicIds} /> : 'Loading'}
+        {topicIds ? <TopicList ids={topicIds} tagId={this.idx} /> : 'Loading'}
       </div>
     )
   }
@@ -51,6 +53,7 @@ Tag.contextTypes = {
 // May still need this even with data function to refresh component on updates for this contract.
 const mapState = state => {
   return {
+    address: state.accounts[0],
     Algernon: state.contracts.Algernon,
     tagTopicIds: state.tags.tagTopicIds
   }
