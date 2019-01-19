@@ -12,7 +12,7 @@ pages:
   script:
   - npm install
   - truffle compile
-  - cp -f contract_builds/* build/
+  - cp -f contract_builds/* build/contracts/
   - truffle migrate --network rinkeby
   - npm run build
   - cp -rf build_webpack/* public
