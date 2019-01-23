@@ -18,14 +18,15 @@ class Stake extends Component {
     return {
       stakeTotal: this.props.Algernon.getTopicTagStakeTotal[this.stakeTotalKey] ?
         this.props.Algernon.getTopicTagStakeTotal[this.stakeTotalKey].value : 0,
-      stakes: this.props.Algernon.getTopicTagStakeTotal[this.stakeTotalKey] ?
-        zip(Object.values(this.props.Algernon.getTopicTagStakeTotal[this.stakeTotalKey].value)) : []
+      stakes: this.props.Algernon.getTopicTagStakes[this.stakesKey] ?
+        zip.apply(this, Object.values(this.props.Algernon.getTopicTagStakes[this.stakesKey].value)) : []
     }
   }
 
   render () {
     const { address, topicId, tagId } = this.props
     const { stakeTotal, stakes } = this.getRenderValues();
+    console.log('stakes: ', stakes)
 
     const userStake = stakes.find(stake => address === stake[2])
 

@@ -31,7 +31,7 @@ class Form extends Component {
     }
   }
 
-  updateAmount = (e) => this.setState({...this.state, amount: e.target.value})
+  updateAmount = (e) => this.setState({...this.state, amount: parseInt(e.target.value)})
 
   showForm = (type) => this.setState({...this.state, showForm: true, updateType: type})
 
@@ -105,11 +105,11 @@ class Form extends Component {
       default:
         onSubmit = this.submitAdd
     }
-    const updateAmount = userStake && this.state.updateType !== UPDATE_TYPES.ADD ?
+    const updateAmount = userStake ?
       this.state.updateType === UPDATE_TYPES.INCREASE ?
-        userStake[1] + this.state.amount
+        parseInt(userStake[1]) + this.state.amount
         :
-        userStake[1] - this.state.amount
+        parseInt(userStake[1]) - this.state.amount
       :
       null
 
