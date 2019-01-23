@@ -11,9 +11,8 @@ contract Algernon is Groups, Percent {
     address token_0x_address;
 
     uint PRECISION = 10 ** 5;
-    uint OWNER_PERCENT  = 15 * PRECISION;
-    uint STAKER_PERCENT = 10 * PRECISION;
-
+    uint OWNER_PERCENT  = 15;
+    uint STAKER_PERCENT = 10;
     mapping (address => uint) public tokenBalances;
 
     constructor (address _tokenAddress) public {
@@ -34,19 +33,18 @@ contract Algernon is Groups, Percent {
 
     //when a user stakes, 15% is given to the topic owner, 10% is distributed among stakers
     //the remaining 75% is staked
-    function distributeStake(TagStake storage _tagStake, uint _amt, address from) internal returns (uint){
+    function distributeStake(TagStake storage _tagStake, uint _amt, uint _topicId, address from) internal returns (uint){
       uint ownerShare = getPercentShare(OWNER_PERCENT, _amt, PRECISION);
       uint stakerShare = getPercentShare(STAKER_PERCENT, _amt, PRECISION);
       uint stakedShare = _amt.sub(ownerShare.add(stakerShare));
 
       tokenBalances[from] -= _amt;
-      tokenBalances[topics[topicId].owner] += ownerShare;
+      tokenBalances[topics[_topicId].owner] += ownerShare;
 
 
       for (uint i = 0;i < _tagStake.stakeIdxs.length;i++) {
         Stake storage stake = stakes[_tagStake.stakeIdxs[i]];
-        uint stakerPercent = getPercent(stake.amt, _tagStake.totalStaked, PRECISION);
-        tokenBalances[stake.staker] += getPercentShare(stakerPercent, stakerShare, PRECISION);
+        tokenBalances[stake.staker] += getPercent(stake.amt, _tagStake.totalStaked, stakerShare);
       }
 
       return stakedShare;
@@ -57,7 +55,7 @@ contract Algernon is Groups, Percent {
       require(tokenBalances[msg.sender] >= _amt, 'Insufficient token balance');
 
       TagStake storage tagStake = stakesByTopic[_topicId][_tagId];
-      uint stakeAmt = distributeStake(tagStake, _amt, msg.sender);
+      uint stakeAmt = distributeStake(tagStake, _amt, _topicId, msg.sender);
       Stake memory stake = Stake(msg.sender, stakeAmt, _topicId, _tagId);
       stakes.push(stake);
       tagStake.totalStaked += stakeAmt;

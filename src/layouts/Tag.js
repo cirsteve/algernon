@@ -9,7 +9,6 @@ class Tag extends Component {
     super(props)
     this.methods = context.drizzle.contracts.Algernon.methods
     this.idx = props.match.params.idx
-    this.userStakesKey = this.methods.getUserStakes.cacheCall(props.address)
 
     this.tagKey = this.methods.getTag.cacheCall(this.idx)
 
@@ -24,8 +23,7 @@ class Tag extends Component {
   getRenderValues = () => {
     return {
       tag: this.props.Algernon.getTag[this.tagKey] ?
-        this.props.Algernon.getTag[this.tagKey].value : null,
-      userStakes
+        this.props.Algernon.getTag[this.tagKey].value : null
       }
   }
 

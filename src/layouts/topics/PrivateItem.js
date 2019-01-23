@@ -4,24 +4,23 @@ import PropTypes from 'prop-types'
 import { getMultihash } from '../../util/multihash'
 import Tile from './TopicTile'
 import Ipfs from '../common/Ipfs'
-import Stake from '../stakes/Stake'
+
 
 class Item extends Component {
   constructor (props, context) {
     super(props)
-    this.topicKey = context.drizzle.contracts.Algernon.methods.getTopic.cacheCall(props.id)
-
+    this.topicKey = context.drizzle.contracts.Algernon.methods.getPrivateTopic.cacheCall(props.id)
   }
 
   getRenderValues = () => {
     return {
-      topicResponse: this.props.Algernon.getTopic[this.topicKey] ?
-        Object.values(this.props.Algernon.getTopic[this.topicKey].value) : null
+      topicResponse: this.props.Algernon.getPrivateTopic[this.topicKey] ?
+        Object.values(this.props.Algernon.getPrivateTopic[this.topicKey].value) : null
     }
   }
 
   render () {
-    const { noLink, linkTo, id, tagId } = this.props
+    const { noLink, linkTo, id } = this.props
     const { topicResponse } = this.getRenderValues();
     let topic = 'Loading Topic'
 
@@ -39,11 +38,6 @@ class Item extends Component {
         <div>
         {topic}
         </div>
-        { tagId ?
-          <Stake topicId={id} tagId={tagId} />
-          :
-          null
-        }
       </div>
     )
   }

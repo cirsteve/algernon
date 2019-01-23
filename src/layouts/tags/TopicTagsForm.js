@@ -22,24 +22,14 @@ class Form extends Component {
     const topicTagIdxs = removedIds.map(id => findIndex(this.props.tagTopicIds[id], i => i === topicId))
     const addedIds = difference(this.state.tagIds, this.props.tagIds, this.props.tagTopicIds)
     console.log('tag update: ', topicId, addedIds, removedIds, removedIdxs, topicTagIdxs, this.props.tagTopicIds)
-    if (addedIds.length) {
-      this.context.drizzle.contracts.Algernon.methods.updateTopicTags.cacheSend(
-        addedIds,
-        removedIds,
-        removedIdxs,
-        topicTagIdxs,
-        topicId
-      )
-    } else {
-      this.context.drizzle.contracts.Algernon.methods.removeTopicTags.cacheSend(
-        removedIds,
-        removedIdxs,
-        topicTagIdxs,
-        topicId
-      )
-    }
 
-
+    this.context.drizzle.contracts.Algernon.methods.updateTopicTags.cacheSend(
+      addedIds,
+      removedIds,
+      removedIdxs,
+      topicTagIdxs,
+      topicId
+    )
 
     this.setState({...this.state, tagIds:null})
   }

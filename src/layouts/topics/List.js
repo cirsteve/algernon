@@ -1,12 +1,13 @@
 import React from 'react'
 import Item from './Item'
+import PrivateItem from './PrivateItem'
 
-export default ({ids, privateTopics }) => ids.length ?
+export default ({ids, privateTopics, tagId, userStakeIds }) => ids.length ?
   ids.map(id =>
     privateTopics ?
-      <Item key={id} id={id} method='getPrivateTopic' linkTo={`/privatetopics/${id}`}  />
+      <PrivateItem key={id} id={id} linkTo={`/privatetopics/${id}`} />
       :
-      <Item key={id} id={id} method='getTopic' linkTo={`/topics/${id}`} />
+      <Item key={id} id={id} tagId={tagId} userStakeIds={userStakeIds} linkTo={`/topics/${id}`} />
     )
   :
   'no topics'

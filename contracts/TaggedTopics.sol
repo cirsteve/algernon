@@ -42,14 +42,7 @@ contract TaggedTopics is Topics {
     for (uint t = 0; t<_addIds.length;t++) {
       addTagTopic(_topicId, _addIds[t]);
     }
-}
-
-  function removeTopicTags(uint[] memory _removeIds, uint[] memory _topicTagIdxs, uint[] memory _taggedUserTopicIdxs, uint _topicId) public {
-    for (uint i=0; i < _removeIds.length;i++) {
-      removeTagTopic(_topicId, _removeIds[i], _topicTagIdxs[i], _taggedUserTopicIdxs[i]);
-    }
   }
-
 
 
   function addTagTopic(uint _topicId, uint _tagId) internal {
@@ -76,14 +69,13 @@ contract TaggedTopics is Topics {
     require(userTopicsByTag[_tagId][msg.sender][_taggedUserTopicsIdx] ==_topicId, 'Topic id and index mismatch');
 
     topicIsTagged[_topicId][_tagId] = false;
-    if (topics[_topicId].tagIds.length > 1) {
-      topics[_topicId].tagIds[_topicTagsIdx] = topics[_topicId].tagIds[topics[_topicId].tagIds.length-1];
-    }
+
+    topics[_topicId].tagIds[_topicTagsIdx] = topics[_topicId].tagIds[topics[_topicId].tagIds.length-1];
+
     topics[_topicId].tagIds.length--;
 
-    if (userTopicsByTag[_tagId][msg.sender].length > 1) {
-      userTopicsByTag[_tagId][msg.sender][_taggedUserTopicsIdx] = userTopicsByTag[_tagId][msg.sender][userTopicsByTag[_tagId][msg.sender].length-1];
-    }
+    userTopicsByTag[_tagId][msg.sender][_taggedUserTopicsIdx] = userTopicsByTag[_tagId][msg.sender][userTopicsByTag[_tagId][msg.sender].length-1];
+
     userTopicsByTag[_tagId][msg.sender].length--;
 
     emit TopicTagUpdated(_topicId, _tagId, false);
@@ -105,20 +97,26 @@ contract TaggedTopics is Topics {
     return userTopicsByTag[_tagId][_address];
   }
 
-  function getTagStake(uint _topicId, uint _tagId) public view returns (uint) {
+  function getTopicTagStakeTotal(uint _topicId, uint _tagId) public view returns (uint) {
     return stakesByTopic[_topicId][_tagId].totalStaked;
   }
 
-  function getTagStakes(uint _topicId, uint _tagId) public view returns (address[] memory stakers, uint[] memory amts) {
+  function getTopicTagStakes(uint _topicId, uint _tagId) public view returns (uint[] memory idxs, uint[] memory amts, address[] memory stakers) {
     uint stakesLength = stakesByTopic[_topicId][_tagId].stakeIdxs.length;
     stakers = new address[](stakesLength);
     amts = new uint256[](stakesLength);
+    idxs = new uint256[](stakesLength);
     for (uint i = 0;i < stakesLength;i++) {
       Stake storage stake = stakes[stakesByTopic[_topicId][_tagId].stakeIdxs[i]];
       stakers[i] = stake.staker;
       amts[i] = stake.amt;
+      idxs[i] = stakesByTopic[_topicId][_tagId].stakeIdxs[i];
     }
-    return (stakers, amts);
+    return (idxs, amts, stakers);
+  }
+
+  function getUserStakeIds(address _address) public view returns (uint[] memory) {
+    return stakesByUser[_address];
   }
 
 }
