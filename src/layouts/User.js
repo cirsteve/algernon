@@ -25,6 +25,8 @@ class User extends Component {
     if (props.connectedAddress === address) {
       this.privateTopicIdsKey = this.methods.getUserPrivateTopicIds.cacheCall()
     }
+
+    this.balanceKey = context.drizzle.contracts.AlgerToken.methods.balanceOf.cacheCall(address)
   }
 
   componentDidMount () {
@@ -47,14 +49,16 @@ class User extends Component {
         Algernon.getUserPrivateTopicIds[this.privateTopicIdsKey].value : null,
       tagCount: Algernon.getTagCount[this.tagCountKey] ?
         parseInt(Algernon.getTagCount[this.tagCountKey].value) : null,
-      tokenBalance: Algernon.getAlgernonTokenBalance[this.tokenBalanceKey] ?
-        parseInt(Algernon.getAlgernonTokenBalance[this.tokenBalanceKey].value) : null
+      tokenBalance: this.props.AlgerToken.balanceOf[this.balanceKey] ?
+            parseInt(this.props.AlgerToken.balanceOf[this.balanceKey].value) : null,
+      contractTokenBalance: this.props.Algernon.getAlgernonTokenBalance[this.tokenBalanceKey] ?
+            parseInt(this.props.Algernon.getAlgernonTokenBalance[this.tokenBalanceKey].value) : null
     }
   }
 
   render () {
     const { tags, connectedAddress } = this.props
-    const { groups, ownedIds, topicIds, privateTopicIds, tokenBalance } = this.getRenderValues();
+    const { groups, ownedIds, topicIds, privateTopicIds, tokenBalance, contractTokenBalance } = this.getRenderValues();
     const address = this.props.match.params.address
     const isOwner = connectedAddress === address
 
@@ -89,7 +93,7 @@ class User extends Component {
           </div>
           <div>
             <h3>{address}</h3>
-            <TokenSection balance={tokenBalance}/>
+            <TokenSection balance={tokenBalance} contractBalance={contractTokenBalance} />
           </div>
         </div>
         <Tabs tabs={tabs} />
@@ -106,6 +110,7 @@ const mapState = state => {
   return {
     connectedAddress: state.accounts[0],
     Algernon: state.contracts.Algernon,
+    AlgerToken: state.contracts.AlgerToken,
     trxs: state.transactions,
     tags: Object.keys(state.tags.tags)
   }

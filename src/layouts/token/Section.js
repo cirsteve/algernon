@@ -41,7 +41,8 @@ class Section extends Component {
   render () {
     return (
       <div>
-        <h2>Token Balance: {this.props.balance}</h2>
+        <h2>Wallet Token Balance: {this.props.balance}</h2>
+        <h2>Algernon Token Balance: {this.props.contractBalance}</h2>
         {this.state.deposit || this.state.withdraw ?
           <Text onChange={this.updateState.bind(this, 'amount')} value={this.state.amount} label="amount" type="number" />
           :

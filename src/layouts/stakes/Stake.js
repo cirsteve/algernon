@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
 import { zip } from 'lodash'
 import PropTypes from 'prop-types'
-import StakeForm from './StakeForm'
+import StakeButton from './StakeButton'
 
 class Stake extends Component {
   constructor (props, context) {
@@ -24,19 +24,21 @@ class Stake extends Component {
   }
 
   render () {
-    const { address, topicId, tagId } = this.props
+    const { address, tag, hashedContent, hash, tagId, topicId } = this.props
     const { stakeTotal, stakes } = this.getRenderValues();
-    console.log('stakes: ', stakes)
 
     const userStake = stakes.find(stake => address === stake[2])
+    console.log('stakes: ', stakes, userStake)
+
+    let title = ''
+    if (hashedContent[hash]) {
+      title = hashedContent[hash].title
+    }
 
     return (
-      <div>
-        <div>
-          {stakeTotal}
-        </div>
-        <StakeForm topicId={topicId} tagId={tagId} userStake={userStake} />
-      </div>
+      <span>
+        <StakeButton topicId={topicId} tagId={tagId} userStake={userStake} stakeTotal={stakeTotal} topicTitle={title} tag={tag} />
+      </span>
     )
   }
 }
@@ -48,8 +50,10 @@ Stake.contextTypes = {
 const mapState = state => {
   return {
     address: state.accounts[0],
+    hashedContent: state.data.hashedContent,
     Algernon: state.contracts.Algernon
   }
 }
+
 
 export default drizzleConnect(Stake, mapState);

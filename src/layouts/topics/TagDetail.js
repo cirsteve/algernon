@@ -5,7 +5,7 @@ import { difference } from 'lodash'
 import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import TopicTagsForm from '../tags/TopicTagsForm'
-import TagItem from '../tags/LabelItem'
+import TagItem from '../tags/StakedItem'
 
 import EditIcon from '@material-ui/icons/Edit'
 
@@ -70,9 +70,10 @@ class Detail extends Component {
   updateEditing = editing => this.setState({...this.state, editing})
 
   render () {
-    const { classes, isOwner, tags, tagIds, topicId } = this.props
+    const { classes, isOwner, tags, tagIds, topicId, hash } = this.props
 
     const tagTopicIds = this.getTagTopicsIds();
+    console.log('td: ', tagIds, tagTopicIds)
 
     const header = isOwner ? <Typography variant="h4" component="h4">Tags<EditIcon onClick={this.updateEditing.bind(this, true)} /></Typography> : <h3>Tags</h3>
 
@@ -82,7 +83,7 @@ class Detail extends Component {
       <TopicTagsForm tagIds={tagIds} options={tagOptions} topicId={topicId} tagTopicIds={tagTopicIds} onCancel={this.onCancel} />
       :
       <div className={classes.tags}>
-        {tagIds.map(id => tags[id] ? <TagItem key={id} label={tags[id]} idx={id} /> : null)}
+        {tagIds.map(id => <TagItem key={id} topicId={topicId} idx={id} hash={hash} />)}
       </div>
 
 

@@ -14,6 +14,7 @@ import IconSubmit from '../common/forms/IconSubmit'
 import TagDetail from './TagDetail'
 import EditIcon from '@material-ui/icons/Edit'
 
+
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -180,7 +181,7 @@ class Detail extends Component {
         <Fragment>
           {metaData}
           <div>
-            <TagDetail isOwner={connectedAddress === owner}  address={connectedAddress} tagIds={tagIds} topicId={parseInt(id)} />
+            <TagDetail isOwner={connectedAddress === owner} hash={hash} address={connectedAddress} tagIds={tagIds} topicId={parseInt(id)} />
           </div>
           <div>
             {note}

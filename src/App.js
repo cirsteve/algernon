@@ -31,7 +31,6 @@ const innerContentStyle = {
 
 class App extends Component {
 
-
   render() {
     return (
       <MuiThemeProvider theme={createMuiTheme(theme)}>

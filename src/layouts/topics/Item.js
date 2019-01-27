@@ -1,10 +1,21 @@
 import React, { Component } from 'react'
 import { drizzleConnect } from 'drizzle-react'
 import PropTypes from 'prop-types'
+import { withStyles } from '@material-ui/core/styles'
 import { getMultihash } from '../../util/multihash'
 import Tile from './TopicTile'
 import Ipfs from '../common/Ipfs'
-import Stake from '../stakes/Stake'
+
+
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    overflow: 'hidden',
+    margin: '2em 0',
+  }
+});
 
 class Item extends Component {
   constructor (props, context) {
@@ -21,7 +32,7 @@ class Item extends Component {
   }
 
   render () {
-    const { noLink, linkTo, id, tagId } = this.props
+    const { noLink, linkTo, id, tagId, classes } = this.props
     const { topicResponse } = this.getRenderValues();
     let topic = 'Loading Topic'
 
@@ -29,21 +40,15 @@ class Item extends Component {
         const link = noLink ? null : linkTo
         topic =
           <Ipfs hash={getMultihash(topicResponse)} >
-            <Tile link={link} id={id} />
+            <Tile link={link} id={id} tagId={tagId} />
+
           </Ipfs>
 
     }
 
     return (
-      <div>
-        <div>
+      <div className={classes.root}>
         {topic}
-        </div>
-        { tagId ?
-          <Stake topicId={id} tagId={tagId} />
-          :
-          null
-        }
       </div>
     )
   }
@@ -60,4 +65,4 @@ const mapState = state => {
   }
 }
 
-export default drizzleConnect(Item, mapState);
+export default withStyles(styles)(drizzleConnect(Item, mapState));

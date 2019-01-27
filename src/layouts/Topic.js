@@ -18,7 +18,7 @@ class Topic extends Component {
 
   componentDidMount () {
     const { getTagCount, getTag } = this.methods
-
+    //get all the tags to be able to populate the tag options for update
     this.props.getTags(getTagCount, getTag)
   }
 

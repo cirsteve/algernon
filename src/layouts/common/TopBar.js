@@ -29,15 +29,14 @@ const styles = {
 class Bar extends React.Component {
   constructor (props, context) {
     super(props)
-
-    this.balanceKey = context.drizzle.contracts.AlgerToken.methods
-      .balanceOf.cacheCall(props.address)
+    this.tokenBalanceKey = context.drizzle.contracts.Algernon.methods
+      .getAlgernonTokenBalance.cacheCall(props.address)
 
   }
 
   getRenderValues = () => ({
-    balance: this.props.AlgerToken.balanceOf[this.balanceKey] ?
-      parseInt(this.props.AlgerToken.balanceOf[this.balanceKey].value) : null
+    balance:this.props.Algernon.getAlgernonTokenBalance[this.tokenBalanceKey] ?
+          parseInt(this.props.Algernon.getAlgernonTokenBalance[this.tokenBalanceKey].value) : 0
   })
 
   render () {
@@ -90,7 +89,7 @@ Bar.contextTypes = {
 const mapState = state => {
   return {
     address: state.accounts[0],
-    AlgerToken: state.contracts.AlgerToken
+    Algernon: state.contracts.Algernon
   }
 }
 export default withStyles(styles)(drizzleConnect(Bar, mapState));

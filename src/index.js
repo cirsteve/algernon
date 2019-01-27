@@ -14,9 +14,19 @@ import { LoadingContainer } from 'drizzle-react-components'
 import { store } from './store'
 import drizzleOptions from './drizzleOptions'
 
+const web3error =
+  <main className="container loading-screen">
+    <div className="pure-g">
+      <div className="pure-u-1-1">
+        <h1><span role="img" aria-label="warning">⚠️</span></h1>
+        <p>Algernon is running on the Rinkeby Test Network. Please use the Chrome/FireFox extension MetaMask, or dedicated Ethereum browsers Mist or Parity, or a web3 enabled mobile browser such as Status connected to the Rinkeby Test Network</p>
+      </div>
+    </div>
+  </main>
+
 ReactDOM.render((
     <DrizzleProvider options={drizzleOptions} store={store}>
-      <LoadingContainer>
+      <LoadingContainer loadingComp={web3error}>
         <BrowserRouter>
           <App />
         </BrowserRouter>

@@ -19,9 +19,9 @@ class Item extends React.Component {
     this.props.tagReceived(this.props.label)
   }
   render () {
-    const { classes, label } = this.props
+    const { classes, label, component } = this.props
     return (
-      <Chip label={label} className={classes.chip} color='primary'/>
+      <Chip label={label} component={component} className={classes.chip} color='primary'/>
     );
   }
 }
